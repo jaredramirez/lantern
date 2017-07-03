@@ -1,0 +1,21 @@
+.headerBar {
+    background-color: #374F4C;
+    height: 15vh;
+    margin: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerTitle {
+    color: #FE5D4C;
+    font-size: 6vh;
+    font-family: Moon-Bold;
+}
+
+.headerSubTitle {
+    color: #FE5D4C;
+    font-size: 3vh;
+    font-family: Moon-Light;
+}
