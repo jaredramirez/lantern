@@ -1,37 +1,39 @@
 const {pickBy} = require('lodash');
-const hapiMongojs = require('hapi-mongojs');
 
 const {create, readAll, readOne, updateOne, deleteOne} = require('../../mongo/ops');
 const {objectFromBsonId, objectToBsonId, toBsonId, nonNull} = require('../misc');
 
 const postCollection = 'posts';
 
-const createPostResolver = (_root, args) =>
-  create(hapiMongojs.db().collection(postCollection), args.post)
-    .then(post => !post ? {} : objectFromBsonId(post))
+const createPostResolver = (_root, args, context) =>
+  create(context.db.collection(postCollection), args.post)
+    .then(post => {
+      console.log('post', post);
+      return !post ? {} : objectFromBsonId(post);
+    })
     .catch((error) => { throw error; });
 
-const getPostsResolver = (_root, args) =>
-  readAll(hapiMongojs.db().collection(postCollection), args)
+const getPostsResolver = (_root, args, context) =>
+  readAll(context.db.collection(postCollection), args)
     .then(posts => !posts ? [] : posts.map(objectFromBsonId))
     .catch((error) => { throw error; });
 
-const getPostResolver = (_root, args) =>
-  readOne(hapiMongojs.db().collection(postCollection), objectToBsonId(args))
+const getPostResolver = (_root, args, context) =>
+  readOne(context.db.collection(postCollection), objectToBsonId(args))
     .then(post => !post ? {} : objectFromBsonId(post))
     .catch((error) => { throw error; });
 
-const updatePostResolver = (_root, {id, post}) =>
+const updatePostResolver = (_root, {id, post}, context) =>
   updateOne(
-    hapiMongojs.db().collection(postCollection),
-    toBsonId(id),
+    context.db.collection(postCollection),
+    {_id: toBsonId(id)},
     pickBy(post, nonNull)
   )
     .then(post => !post ? {} : objectFromBsonId(post))
     .catch((error) => { throw error; });
 
-const deletePostResolver = (_root, args) =>
-  deleteOne(hapiMongojs.db().collection(postCollection), objectToBsonId(args))
+const deletePostResolver = (_root, args, context) =>
+  deleteOne(context.db.collection(postCollection), objectToBsonId(args))
     .then(post => !post ? {} : objectFromBsonId(post))
     .catch((error) => { throw error; });
 

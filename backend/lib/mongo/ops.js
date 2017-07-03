@@ -2,15 +2,15 @@ const mongoBase = (
   method,
   collection,
   object,
-  returnRawResult = false
+  returnOps = false
 ) => new Promise((resolve, reject) => {
   collection[method](object, (err, result) => {
     if (err) {
       reject(err);
     }
 
-    if (returnRawResult) {
-      resolve(result);
+    if (returnOps) {
+      resolve(result.ops[0]);
     } else if (result && result.value) {
       resolve(result.value);
     } else {
@@ -20,7 +20,7 @@ const mongoBase = (
 });
 
 const create = (collection, object) =>
-  mongoBase('insert', collection, object, true);
+  mongoBase('insertOne', collection, object, true);
 
 const readAll = (collection, condition = {}) => new Promise((resolve, reject) => {
   collection.find(condition).toArray((err, users) => {
@@ -34,26 +34,21 @@ const readAll = (collection, condition = {}) => new Promise((resolve, reject) =>
 const readOne = (collection, condition = {}) =>
   mongoBase('findOne', collection, condition, true);
 
-const updateOne = (collection, condition = {}, values = {}) =>
+const updateOne = (collection, condition = {}, values) =>
   new Promise((resolve, reject) => {
-    collection.findAndModify({query: condition, update: {
+    collection.findAndModify(condition, [], {
       $set: values,
-    }, new: false}, (err, result) => {
+    }, {new: false}, (err, result) => {
       if (err) {
         reject(err);
       }
-      resolve(result);
+      console.log('result', result);
+      resolve(result.value);
     });
   });
 
-const deleteOne = (collection,  condition = {}) => new Promise((resolve, reject) => {
-  collection.findAndModify({query: condition, remove: true, new: false}, (err, result) => {
-    if (err) {
-      reject(err);
-    }
-    resolve(result);
-  });
-});
+const deleteOne = (collection,  condition = {}) =>
+  mongoBase('findOneAndDelete', collection, condition);
 
 module.exports = {
   create,

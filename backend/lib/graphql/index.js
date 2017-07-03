@@ -12,18 +12,21 @@ const schema = new GraphQLSchema({
   mutation,
 });
 
-const graphqlPlugin = {
+const getGraphqlPlugin = server => ({
   register: graphqlHapi,
   options: {
     path: '/graphql',
     graphqlOptions: {
       schema,
+      context: {
+        db: server.mongo.db,
+      },
     },
     route: {
       cors: true,
     }
   },
-};
+});
 
 const graphiqlPlugin = {
   register: graphiqlHapi,
@@ -36,6 +39,6 @@ const graphiqlPlugin = {
 };
 
 module.exports = {
-  graphqlPlugin,
+  getGraphqlPlugin,
   graphiqlPlugin,
 };

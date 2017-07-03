@@ -10,10 +10,11 @@
     "start": "node lib/index.js"
   },
   "dependencies": {
+    "bson-objectid": "^1.1.5",
     "graphql": "^0.10.3",
     "graphql-server-hapi": "^1.0.0",
     "hapi": "^16.4.3",
-    "hapi-mongojs": "^3.0.1",
+    "hapi-mongodb": "^6.2.1",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
