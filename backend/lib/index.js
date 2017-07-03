@@ -1,6 +1,6 @@
 const hapi = require('hapi');
 
-const {getGraphqlPlugin, graphiqlPlugin} = require('./graphql');
+const {graphqlPlugin, graphiqlPlugin} = require('./graphql');
 const mongoPlugin = require('./mongo');
 
 const server = new hapi.Server();
@@ -15,7 +15,8 @@ server.register(mongoPlugin, (pluginError) => {
     throw pluginError;
   }
 
-  const graphqlPlugins = [getGraphqlPlugin(server), graphiqlPlugin];
+  // graphql plugins need mongo to be finished registering before they can start
+  const graphqlPlugins = [graphqlPlugin, graphiqlPlugin];
   server.register(graphqlPlugins);
 
   console.info('Starting server...');
