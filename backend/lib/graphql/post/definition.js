@@ -1,6 +1,7 @@
 const {
   GraphQLObjectType,
   GraphQLInputObjectType,
+  GraphQLList,
   GraphQLNonNull,
   GraphQLString,
   GraphQLInt,
@@ -11,15 +12,16 @@ const createNonNull = type => new GraphQLNonNull(type);
 const getFields = (shouldBeNonNull = true) => ({
   title: {
     type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
-    description: 'Title of a post.',
+    description: 'Title of the post.',
   },
   body: {
     type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
-    description: 'Body of a post.',
+    description: 'Body of the post.',
   },
   stars: {
-    type: shouldBeNonNull ? createNonNull(GraphQLInt) : GraphQLInt,
-    description: 'Number of stars a post has.',
+    type: shouldBeNonNull
+      ? createNonNull(new GraphQLList(GraphQLString)) : new GraphQLList(GraphQLString),
+    description: 'List of users that have starred the post.',
   },
   author: {
     type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
@@ -32,7 +34,7 @@ const PostType = new GraphQLObjectType({
   fields: Object.assign({}, getFields(), {
     id: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'Identifier of a post.',
+      description: 'Identifier of thie post.',
     },
   }),
 });

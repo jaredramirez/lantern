@@ -7,10 +7,7 @@ const postCollection = 'posts';
 
 const createPostResolver = (_root, args, context) =>
   create(context.db.collection(postCollection), args.post)
-    .then(post => {
-      console.log('post', post);
-      return !post ? {} : objectFromBsonId(post);
-    })
+    .then(post => !post ? {} : objectFromBsonId(post))
     .catch((error) => { throw error; });
 
 const getPostsResolver = (_root, args, context) =>
