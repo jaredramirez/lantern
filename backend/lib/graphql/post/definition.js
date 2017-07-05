@@ -34,7 +34,7 @@ const PostType = new GraphQLObjectType({
   fields: Object.assign({}, getFields(), {
     id: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'Identifier of thie post.',
+      description: 'Identifier of the post.',
     },
   }),
 });

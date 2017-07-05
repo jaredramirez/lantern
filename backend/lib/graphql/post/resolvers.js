@@ -7,17 +7,17 @@ const postCollection = 'posts';
 
 const createPostResolver = (_root, args, context) =>
   create(context.db.collection(postCollection), args.post)
-    .then(post => !post ? {} : objectFromBsonId(post))
+    .then(post => post ? objectFromBsonId(post) : null)
     .catch((error) => { throw error; });
 
 const getPostsResolver = (_root, args, context) =>
   readAll(context.db.collection(postCollection), args)
-    .then(posts => !posts ? [] : posts.map(objectFromBsonId))
+    .then(posts => posts ? posts.map(objectFromBsonId) : null)
     .catch((error) => { throw error; });
 
 const getPostResolver = (_root, args, context) =>
   readOne(context.db.collection(postCollection), objectToBsonId(args))
-    .then(post => !post ? {} : objectFromBsonId(post))
+    .then(post => post ? objectFromBsonId(post) : null)
     .catch((error) => { throw error; });
 
 const updatePostResolver = (_root, {id, post}, context) =>
@@ -26,12 +26,12 @@ const updatePostResolver = (_root, {id, post}, context) =>
     {_id: toBsonId(id)},
     pickBy(post, nonNull)
   )
-    .then(post => !post ? {} : objectFromBsonId(post))
+    .then(post => post ? objectFromBsonId(post) : null)
     .catch((error) => { throw error; });
 
 const deletePostResolver = (_root, args, context) =>
   deleteOne(context.db.collection(postCollection), objectToBsonId(args))
-    .then(post => !post ? {} : objectFromBsonId(post))
+    .then(post => post ? objectFromBsonId(post) : null)
     .catch((error) => { throw error; });
 
 module.exports = {

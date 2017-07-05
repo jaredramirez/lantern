@@ -13,11 +13,12 @@ const schema = new GraphQLSchema({
   mutation,
 });
 
-const getGraphqlOptions = (db, token = null) => ({
+const getGraphqlOptions = (db, {token = null, tokenPayload = null}) => ({
   schema,
   context: {
     db,
     token,
+    tokenPayload,
   }
 });
 
@@ -27,7 +28,7 @@ const graphqlPlugin = {
     path: '/graphql',
     graphqlOptions: request =>
       decodeToken(request)
-        .then(token => getGraphqlOptions(request.mongo.db, token))
+        .then(values => getGraphqlOptions(request.mongo.db, values))
         .catch(() => getGraphqlOptions(request.mongo.db)),
     route: {
       cors: true,

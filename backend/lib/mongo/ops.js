@@ -1,26 +1,25 @@
 const mongoBase = (
   method,
   collection,
-  object,
-  returnOps = false
+  object
 ) => new Promise((resolve, reject) => {
   collection[method](object, (err, result) => {
     if (err) {
       reject(err);
     }
 
-    if (returnOps) {
+    if (result && result.ops) {
       resolve(result.ops[0]);
     } else if (result && result.value) {
       resolve(result.value);
     } else {
-      resolve();
+      resolve(result);
     }
   });
 });
 
 const create = (collection, object) =>
-  mongoBase('insertOne', collection, object, true);
+  mongoBase('insertOne', collection, object);
 
 const readAll = (collection, condition = {}) => new Promise((resolve, reject) => {
   collection.find(condition).toArray((err, users) => {
@@ -32,7 +31,7 @@ const readAll = (collection, condition = {}) => new Promise((resolve, reject) =>
 });
 
 const readOne = (collection, condition = {}) =>
-  mongoBase('findOne', collection, condition, true);
+  mongoBase('findOne', collection, condition);
 
 const updateOne = (collection, condition = {}, values) =>
   new Promise((resolve, reject) => {
@@ -42,8 +41,12 @@ const updateOne = (collection, condition = {}, values) =>
       if (err) {
         reject(err);
       }
-      console.log('result', result);
-      resolve(result.value);
+
+      if (result && result.value) {
+        resolve(result.value);
+      } else {
+        resolve(result);
+      }
     });
   });
 

@@ -10,6 +10,7 @@
     "start": "node lib/index.js"
   },
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "bson-objectid": "^1.1.5",
     "graphql": "^0.10.3",
     "graphql-server-hapi": "^1.0.0",

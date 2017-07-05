@@ -12,9 +12,13 @@ const objectFromBsonId = value =>
 
 const nonNull = value => value !== null;
 
+const authenticateUserAction = (token, id, tokenId, cb) =>
+  !token || id !== tokenId ? null : cb()
+
 module.exports = {
   toBsonId,
   fromBsonId,
   objectToBsonId,
   objectFromBsonId,
+  authenticateUserAction,
 }
