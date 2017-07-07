@@ -15,10 +15,16 @@ const nonNull = value => value !== null;
 const authenticateUserAction = (token, id, tokenId, cb) =>
   !token || id !== tokenId ? null : cb()
 
+const logger = foo => {
+  console.log(foo);
+  return foo;
+};
+
 module.exports = {
   toBsonId,
   fromBsonId,
   objectToBsonId,
   objectFromBsonId,
   authenticateUserAction,
+  logger,
 }
