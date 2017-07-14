@@ -12,6 +12,7 @@ import UrlParser exposing (Parser, oneOf, s, parseHash)
 type Route
     = NotFound
     | Landing
+    | Feed
 
 
 href : Route -> Attribute msg
@@ -35,6 +36,7 @@ routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
         [ UrlParser.map Landing (s "")
+        , UrlParser.map Feed (s "feed")
         , UrlParser.map NotFound (s "*")
         ]
 
@@ -46,6 +48,9 @@ routeToString route =
             case route of
                 Landing ->
                     [ "" ]
+
+                Feed ->
+                    [ "feed" ]
 
                 _ ->
                     []

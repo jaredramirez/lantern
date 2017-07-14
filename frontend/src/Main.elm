@@ -6,12 +6,25 @@ import Html.Events exposing (onClick)
 import Navigation
 import Route exposing (Route, href, fromLocation)
 import Pages.Landing
+import Pages.Feed
 import Pages.NotFound
+import Data.Post exposing (Posts)
+import Request.Post exposing (postsRequest, PostsResponse)
+import GraphQL.Client.Http as GraphQLClient
+import Task exposing (Task, onError)
+
+
+sendPostsRequest : Cmd Msg
+sendPostsRequest =
+    GraphQLClient.sendQuery "http://localhost:3000/graphql" postsRequest
+        |> Task.attempt RecievePosts
 
 
 type alias Model =
     { location : Route
     , title : String
+    , posts : Posts
+    , postsError : String
     }
 
 
@@ -26,7 +39,9 @@ init location =
                 route
         )
         "title"
-    , Cmd.none
+        []
+        ""
+    , sendPostsRequest
     )
 
 
@@ -36,12 +51,16 @@ view model =
         Route.Landing ->
             Pages.Landing.view model.title
 
+        Route.Feed ->
+            Pages.Feed.view
+
         _ ->
             Pages.NotFound.view
 
 
 type Msg
     = RouteChange (Maybe Route)
+    | RecievePosts PostsResponse
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -56,6 +75,14 @@ update msg model =
             ( { model | location = Route.NotFound }
             , Cmd.none
             )
+
+        RecievePosts (Ok posts) ->
+            ( { model | posts = posts }
+            , Cmd.none
+            )
+
+        RecievePosts (Err postsError) ->
+            ( { model | postsError = "There was an error loading the posts." }, Cmd.none )
 
 
 main : Program Never Model Msg

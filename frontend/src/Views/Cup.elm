@@ -1,4 +1,4 @@
-module Views.Arrow exposing (view)
+module Views.Cup exposing (view)
 
 import Html exposing (Html)
 import Svg exposing (..)

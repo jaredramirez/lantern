@@ -1,8 +1,8 @@
 module Styles.Header exposing (Classes(..), namespace, css)
 
 import Css exposing (..)
-import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
+import Html.CssHelpers exposing (withNamespace)
 import Styles.Constants exposing (colors)
 
 
@@ -21,7 +21,6 @@ css =
         [ class Bar
             [ backgroundColor (hex colors.slate)
             , height (vh 15)
-            , margin (vh 2)
             , displayFlex
             , flexDirection column
             , alignItems center

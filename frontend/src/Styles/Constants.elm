@@ -12,4 +12,5 @@ colors =
     { tomato = "FE5D4C"
     , slate = "374F4C"
     , babyPowder = "FFFEFC"
+    , cerulean = "007AA3"
     }

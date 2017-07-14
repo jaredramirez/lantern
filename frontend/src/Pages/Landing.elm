@@ -1,50 +1,44 @@
 module Pages.Landing exposing (view)
 
-import Html exposing (Html, div)
-import Html.Attributes
+import Html exposing (Html, div, a, span, text)
 import Css
-import Styles.Page exposing (Classes(..), namespace)
+import Route exposing (Route(Feed, Landing), href)
+import Styles.Constants exposing (colors)
+import Styles.Page exposing (Classes(Backdrop))
+import Styles.Landing exposing (Classes(..))
 import Views.Header
-import Views.List exposing (viewLinks)
+import Views.ArrowRight
+import Views.ArrowLeft
+
+
+pageNamespace =
+    Styles.Page.namespace
 
 
 { class } =
-    namespace
+    Styles.Landing.namespace
 
 
-styles =
-    Css.asPairs >> Html.Attributes.style
-
-
-contactInfo : List ( String, String )
-contactInfo =
-    [ ( "jaredramirez@me.com", "mailto:jaredramirez@me" )
-    , ( "+1 (940) 368 - 7410", "" )
-    ]
-
-
-portfolioInfo : List ( String, String )
-portfolioInfo =
-    [ ( "Toptal", "https://www.toptal.com/resume/jared-ramirez" )
-    , ( "Github", "https://github.com/jaredramirez" )
-    , ( "Linkedin", "https://www.linkedin.com/in/jared-ramirez-830591125/" )
-    ]
+viewBox : String -> Html msg -> Route -> Html msg
+viewBox label icon route =
+    a
+        [ class [ Box ], href route ]
+        [ span [ class [ Text ] ] [ text label ]
+        , icon
+        ]
 
 
 view : String -> Html msg
 view _ =
-    div [ class [ Backdrop ] ]
-        [ Views.Header.view "Jared Ramirez" "Full Stack Dev"
+    div [ pageNamespace.class [ Backdrop ] ]
+        [ Views.Header.view "lantern" "an arbitrarily named blog"
         , div
-            [ class [ Container ]
-            , styles
-                [ Css.width (Css.vw 100)
-                , Css.height (Css.vh 50)
-                , Css.alignItems Css.flexStart
-                , Css.justifyContent Css.spaceAround
+            [ class [ Container ] ]
+            [ div [ class [ Label ] ] [ text "jump to" ]
+            , div
+                [ class [ BoxContainer ] ]
+                [ viewBox "Feed" (Views.ArrowLeft.view colors.babyPowder) Feed
+                , viewBox "Account" (Views.ArrowRight.view colors.babyPowder) Landing
                 ]
-            ]
-            [ (viewLinks "Contact" contactInfo 40)
-            , (viewLinks "Portfolio" portfolioInfo 40)
             ]
         ]

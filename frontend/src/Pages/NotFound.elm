@@ -5,7 +5,7 @@ import Html.Attributes
 import Css
 import Route exposing (Route, href)
 import Styles.Page exposing (Classes(..), namespace)
-import Views.Arrow
+import Views.Cup
 import Views.Header
 import Views.List
 
@@ -38,7 +38,7 @@ view =
             ]
             [ a
                 [ href Route.Landing, class [ Container, Link ] ]
-                [ Views.Arrow.view
+                [ Views.Cup.view
                 , span [ class [ Text ], styles [ Css.marginLeft (Css.vw 1) ] ]
                     [ text "Back to Landing" ]
                 ]

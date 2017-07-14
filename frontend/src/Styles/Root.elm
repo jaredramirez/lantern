@@ -4,8 +4,10 @@ import Css.File exposing (CssFileStructure, CssCompilerProgram)
 import Css exposing (Stylesheet)
 import Html.CssHelpers exposing (Namespace)
 import Styles.Header
+import Styles.SubHeader
 import Styles.List
 import Styles.Page
+import Styles.Landing
 
 
 port files : CssFileStructure -> Cmd msg
@@ -29,8 +31,10 @@ fileStructure =
     let
         files =
             [ ( Styles.Header.namespace, Styles.Header.css )
+            , ( Styles.SubHeader.namespace, Styles.SubHeader.css )
             , ( Styles.List.namespace, Styles.List.css )
             , ( Styles.Page.namespace, Styles.Page.css )
+            , ( Styles.Landing.namespace, Styles.Landing.css )
             ]
     in
         Css.File.toFileStructure (List.map generateFile files)
