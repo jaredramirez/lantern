@@ -7,11 +7,17 @@ const {
   GraphQLInt,
 } = require('graphql');
 
-const {PostType} = require('../post');
-
 const createNonNull = type => new GraphQLNonNull(type);
 
 const getFields = (shouldBeNonNull = true) => ({
+  firstName: {
+    type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
+    description: 'First Naem of the user.',
+  },
+  lastName: {
+    type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
+    description: 'First Naem of the user.',
+  },
   email: {
     type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
     description: 'Email of the user.',
@@ -24,10 +30,6 @@ const UserType = new GraphQLObjectType({
     id: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Identifier of the user.',
-    },
-    posts: {
-      type: new GraphQLList(PostType),
-      description: 'Posts of the user',
     },
   }),
 });

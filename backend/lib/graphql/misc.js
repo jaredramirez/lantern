@@ -1,3 +1,9 @@
+const {UserError} = require('graphql-errors');
+
+const throwError = msg => {
+  throw new UserError(msg);
+};
+
 const ObjectId = require('bson-objectid');
 
 const toBsonId = id => ObjectId(id);
@@ -13,7 +19,7 @@ const objectFromBsonId = value =>
 const nonNull = value => value !== null;
 
 const authenticateUserAction = (token, id, tokenId, cb) =>
-  !token || id !== tokenId ? null : cb()
+  !token || id !== tokenId ? throwError('Unauthorized') : cb()
 
 const logger = foo => {
   console.log(foo);
@@ -21,6 +27,7 @@ const logger = foo => {
 };
 
 module.exports = {
+  throwError,
   toBsonId,
   fromBsonId,
   objectToBsonId,

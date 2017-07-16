@@ -8,10 +8,10 @@ import Styles.ContentHeader exposing (Classes(..), namespace)
     namespace
 
 
-view : String -> Html msg -> String Html msg
+view : String -> String -> String -> Html msg
 view left center right =
-    div []
-        [ span [] [ text left ]
-        , center
-        , span [] [ text right ]
+    div [ class [ Container ] ]
+        [ span [ class [ SubText ] ] [ text left ]
+        , span [ class [ MainText ] ] [ text center ]
+        , span [ class [ SubText ] ] [ text right ]
         ]

@@ -2,6 +2,7 @@ const {
   graphql,
   GraphQLSchema,
 } = require('graphql');
+const {maskErrors} = require('graphql-errors');
 const {graphqlHapi, graphiqlHapi} = require('graphql-server-hapi');
 
 const {decodeToken} = require('../auth');
@@ -12,6 +13,8 @@ const schema = new GraphQLSchema({
   query,
   mutation,
 });
+
+maskErrors(schema);
 
 const getGraphqlOptions = (db, {token = null, tokenPayload = null}) => ({
   schema,

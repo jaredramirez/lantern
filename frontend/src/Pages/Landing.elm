@@ -28,8 +28,8 @@ viewBox label icon route =
         ]
 
 
-view : String -> Html msg
-view _ =
+view : Html msg
+view =
     div [ pageNamespace.class [ Backdrop ] ]
         [ Views.Header.view "lantern" "an arbitrarily named blog"
         , div

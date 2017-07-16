@@ -7,6 +7,8 @@ const {
   GraphQLInt,
 } = require('graphql');
 
+const {UserType} = require('../user');
+
 const createNonNull = type => new GraphQLNonNull(type);
 
 const getFields = (shouldBeNonNull = true) => ({
@@ -18,15 +20,6 @@ const getFields = (shouldBeNonNull = true) => ({
     type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
     description: 'Body of the post.',
   },
-  stars: {
-    type: shouldBeNonNull
-      ? createNonNull(new GraphQLList(GraphQLString)) : new GraphQLList(GraphQLString),
-    description: 'List of users that have starred the post.',
-  },
-  author: {
-    type: shouldBeNonNull ? createNonNull(GraphQLString) : GraphQLString,
-    description: 'Author who wrote the post.',
-  },
 });
 
 const PostType = new GraphQLObjectType({
@@ -35,6 +28,14 @@ const PostType = new GraphQLObjectType({
     id: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Identifier of the post.',
+    },
+    author: {
+      type: new GraphQLNonNull(UserType),
+      description: 'Author who wrote the post.',
+    },
+    stars: {
+      type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+      description: 'List of users that have starred the post.',
     },
   }),
 });
@@ -46,7 +47,12 @@ const PostCreateInputType = new GraphQLInputObjectType({
 
 const PostUpdateInputType = new GraphQLInputObjectType({
   name: 'PostUpdateInputType',
-  fields: getFields(false),
+  fields: Object.assign({}, getFields(false), {
+    stars: {
+      type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+      description: 'List of users that have starred the post.',
+    },
+  }),
 });
 
 module.exports = {

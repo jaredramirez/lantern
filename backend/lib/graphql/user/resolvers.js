@@ -4,6 +4,7 @@ const {get, pickBy} = require('lodash');
 const {issueToken} = require('../../auth');
 const {create, readOne, updateOne, deleteOne} = require('../../mongo/ops');
 const {
+  throwError,
   objectFromBsonId,
   objectToBsonId,
   toBsonId,
@@ -31,7 +32,7 @@ const createUserResolver = (_root, args, context) =>
   bcrypt.hash(args.user.password, saltRounds)
     .then(hash => create(
       context.db.collection(userCollection),
-      {email: args.user.email, password: hash, posts: []}
+      Object.assign({}, args.user, {password: hash})
     ))
     .then(user => {
       if (!user) { return null; }

@@ -2,6 +2,7 @@ const {get, pickBy} = require('lodash');
 
 const {create, readAll, readOne, updateOne, deleteOne} = require('../../mongo/ops');
 const {
+  throwError,
   objectFromBsonId,
   objectToBsonId,
   toBsonId,
@@ -12,12 +13,15 @@ const {
 const postCollection = 'posts';
 
 // PRIVATE - Requires an authed user
-const createPostResolver = (_root, args, {db, token}) =>
+const createPostResolver = (_root, args, {db, token, tokenPayload}) =>
   token ? (
-    create(db.collection(postCollection), args.post)
+    create(
+      db.collection(postCollection),
+      Object.assign({}, args.post, {author: tokenPayload, stars: []})
+    )
       .then(post => post ? objectFromBsonId(post) : null)
       .catch((error) => { throw error; })
-  ) : null;
+  ) : throwError('Unauthorized');
 
 // PUBLIC
 const getPostsResolver = (_root, args, context) =>
@@ -46,8 +50,8 @@ const updatePostResolver = (_root, {id, post}, {db, token, tokenPayload}) =>
               .catch((error) => { throw error; })
           )
         )
-      ) : null)
-  ) : null;
+    ) : throwError('Post does not exisit.'))
+  ) : throwError('Unauthorized');
 
 // PRIVATE - Requires an authed user, and the user most own the post
 const deletePostResolver = (_root, {id}, {db, token, tokenPayload}) =>
@@ -61,8 +65,8 @@ const deletePostResolver = (_root, {id}, {db, token, tokenPayload}) =>
               .catch((error) => { throw error; })
           )
         )
-      ) : null)
-  ) : null;
+    ) : throwError('Post does not exisit.'))
+  ) : throwError('Unauthorized');
 
 module.exports = {
   createPostResolver,
