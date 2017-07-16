@@ -1,0 +1,13 @@
+{
+  "name": "blog-frontend",
+  "version": "0.0.1",
+  "description": "Frontend for Lantern blog",
+  "main": "index.js",
+  "repository": "https://github.com/jaredramirez/lantern",
+  "author": "jaredramirez@me.com <Jared Ramirez>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "./scripts/dev.sh",
+    "build:css": "./scripts/css.sh"
+  }
+}
