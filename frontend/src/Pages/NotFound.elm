@@ -3,7 +3,7 @@ module Pages.NotFound exposing (view)
 import Html exposing (Html, div, span, a, text)
 import Html.Attributes
 import Css
-import Route exposing (Route, href)
+import Route exposing (Route(Landing), href)
 import Styles.Page exposing (Classes(..), namespace)
 import Views.Cup
 import Views.Header
@@ -37,7 +37,7 @@ view =
                 ]
             ]
             [ a
-                [ href Route.Landing, class [ Container, Link ] ]
+                [ href Landing, class [ Container, Link ] ]
                 [ Views.Cup.view
                 , span [ class [ Text ], styles [ Css.marginLeft (Css.vw 1) ] ]
                     [ text "Back to Landing" ]

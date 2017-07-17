@@ -8,30 +8,30 @@ import Navigation
 import Route exposing (Route, href, fromLocation)
 import Pages.Utils exposing (PageLoadError)
 import Pages.Landing as LandingPage
-import Pages.Feed as FeedPage
+import Pages.Posts as PostsPage
 import Pages.NotFound
 
 
 type Page
     = NotFound
     | Landing
-    | Feed FeedPage.Model
+    | Posts PostsPage.Model
 
 
 type alias Model =
     { page : Page }
 
 
-initalPage : Page
-initalPage =
-    Landing
+initalModel : Model
+initalModel =
+    { page = Landing }
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
     routeChange
         (fromLocation location)
-        { page = Landing }
+        initalModel
 
 
 view : Model -> Html Msg
@@ -40,9 +40,8 @@ view model =
         Landing ->
             LandingPage.view
 
-        Feed subModel ->
-            FeedPage.view subModel
-                |> Html.map FeedMsg
+        Posts subModel ->
+            PostsPage.view subModel
 
         _ ->
             Pages.NotFound.view
@@ -51,9 +50,9 @@ view model =
 routeChange : Maybe Route -> Model -> ( Model, Cmd Msg )
 routeChange maybeRoute model =
     let
-        transitionToRoute page toMsg ( newPage, task ) =
-            ( { model | page = page newPage }
-            , Task.attempt toMsg task
+        transitionToRoute page toMsg ( initPage, initTask ) =
+            ( { model | page = page initPage }
+            , Task.attempt toMsg initTask
             )
     in
         case maybeRoute of
@@ -62,8 +61,8 @@ routeChange maybeRoute model =
                 , Cmd.none
                 )
 
-            Just Route.Feed ->
-                transitionToRoute Feed FeedLoaded FeedPage.init
+            Just Route.Posts ->
+                transitionToRoute Posts PostsLoaded PostsPage.init
 
             _ ->
                 ( { model | page = NotFound }
@@ -73,8 +72,7 @@ routeChange maybeRoute model =
 
 type Msg
     = RouteChange (Maybe Route)
-    | FeedLoaded (Result PageLoadError FeedPage.Model)
-    | FeedMsg FeedPage.Msg
+    | PostsLoaded (Result PostsPage.Model PostsPage.Model)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,17 +81,11 @@ update msg model =
         ( RouteChange maybeRoute, _ ) ->
             routeChange maybeRoute model
 
-        ( FeedLoaded (Ok subModel), _ ) ->
-            ( { model | page = Feed subModel }, Cmd.none )
+        ( PostsLoaded (Ok subModel), Posts _ ) ->
+            ( { model | page = Posts subModel }, Cmd.none )
 
-        -- ( FeedLoaded (Err subModel), _ ) ->
-        -- ( { model | page = Feed subModel }, Cmd.none )
-        ( FeedMsg subMsg, Feed subModel ) ->
-            let
-                ( newPage, newCmd ) =
-                    FeedPage.update subMsg subModel
-            in
-                ( { model | page = Feed newPage }, Cmd.map FeedMsg newCmd )
+        ( PostsLoaded (Err subModel), Posts _ ) ->
+            ( { model | page = Posts subModel }, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )

@@ -2,7 +2,7 @@ module Pages.Landing exposing (view)
 
 import Html exposing (Html, div, a, span, text)
 import Css
-import Route exposing (Route(Feed, Landing), href)
+import Route exposing (Route(Landing, Posts), href)
 import Styles.Constants exposing (colors)
 import Styles.Page exposing (Classes(Backdrop))
 import Styles.Landing exposing (Classes(..))
@@ -37,7 +37,7 @@ view =
             [ div [ class [ Label ] ] [ text "jump to" ]
             , div
                 [ class [ BoxContainer ] ]
-                [ viewBox "Feed" (Views.ArrowLeft.view colors.babyPowder) Feed
+                [ viewBox "Posts" (Views.ArrowLeft.view colors.babyPowder) Posts
                 , viewBox "Account" (Views.ArrowRight.view colors.babyPowder) Landing
                 ]
             ]

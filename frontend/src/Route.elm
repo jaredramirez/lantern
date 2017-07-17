@@ -3,7 +3,7 @@ module Route exposing (Route(..), href, fromLocation)
 import Html exposing (Attribute)
 import Html.Attributes as HtmlAttr
 import Navigation
-import UrlParser exposing (Parser, oneOf, s, parseHash)
+import UrlParser exposing (Parser, oneOf, parseHash, s)
 
 
 -- EXTERNAL
@@ -12,7 +12,8 @@ import UrlParser exposing (Parser, oneOf, s, parseHash)
 type Route
     = NotFound
     | Landing
-    | Feed
+    | Posts
+    | Post
 
 
 href : Route -> Attribute msg
@@ -36,7 +37,9 @@ routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
         [ UrlParser.map Landing (s "")
-        , UrlParser.map Feed (s "feed")
+        , UrlParser.map Posts (s "posts")
+
+        -- , UrlParser.map Post (s "posts" )
         , UrlParser.map NotFound (s "*")
         ]
 
@@ -49,8 +52,8 @@ routeToString route =
                 Landing ->
                     [ "" ]
 
-                Feed ->
-                    [ "feed" ]
+                Posts ->
+                    [ "posts" ]
 
                 _ ->
                     []
