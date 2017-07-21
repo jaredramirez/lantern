@@ -1,7 +1,7 @@
-module Views.Post exposing (view)
+module Views.PostPreview exposing (view)
 
 import Html exposing (Html, div, span, text)
-import Styles.Post exposing (Classes(..), namespace)
+import Styles.PostPreview exposing (Classes(..), namespace)
 import Data.Post exposing (Post)
 
 

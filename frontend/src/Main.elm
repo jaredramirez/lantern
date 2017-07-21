@@ -9,6 +9,8 @@ import Route exposing (Route, href, fromLocation)
 import Pages.Utils exposing (PageLoadError)
 import Pages.Landing as LandingPage
 import Pages.Posts as PostsPage
+import Pages.Post as PostPage
+import Pages.NewPost as NewPostPage
 import Pages.NotFound
 
 
@@ -16,6 +18,8 @@ type Page
     = NotFound
     | Landing
     | Posts PostsPage.Model
+    | Post PostPage.Model
+    | NewPost NewPostPage.Model
 
 
 type alias Model =
@@ -43,6 +47,14 @@ view model =
         Posts subModel ->
             PostsPage.view subModel
 
+        NewPost subModel ->
+            NewPostPage.view subModel
+                |> Html.map NewPostMsg
+
+        Post subModel ->
+            PostPage.view subModel
+                |> Html.map PostMsg
+
         _ ->
             Pages.NotFound.view
 
@@ -57,12 +69,16 @@ routeChange maybeRoute model =
     in
         case maybeRoute of
             Just Route.Landing ->
-                ( { model | page = Landing }
-                , Cmd.none
-                )
+                ( { model | page = Landing }, Cmd.none )
 
             Just Route.Posts ->
                 transitionToRoute Posts PostsLoaded PostsPage.init
+
+            Just Route.NewPost ->
+                ( { model | page = NewPost NewPostPage.init }, Cmd.none )
+
+            Just (Route.Post id) ->
+                transitionToRoute Post PostLoaded (PostPage.init id)
 
             _ ->
                 ( { model | page = NotFound }
@@ -73,6 +89,9 @@ routeChange maybeRoute model =
 type Msg
     = RouteChange (Maybe Route)
     | PostsLoaded (Result PostsPage.Model PostsPage.Model)
+    | PostLoaded (Result PostPage.Model PostPage.Model)
+    | PostMsg PostPage.Msg
+    | NewPostMsg NewPostPage.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -86,6 +105,26 @@ update msg model =
 
         ( PostsLoaded (Err subModel), Posts _ ) ->
             ( { model | page = Posts subModel }, Cmd.none )
+
+        ( NewPostMsg subMsg, NewPost subModel ) ->
+            let
+                ( newSubModel, cmd ) =
+                    NewPostPage.update subMsg subModel
+            in
+                ( { model | page = NewPost newSubModel }, Cmd.map NewPostMsg cmd )
+
+        ( PostLoaded (Ok subModel), Post _ ) ->
+            ( { model | page = Post subModel }, Cmd.none )
+
+        ( PostLoaded (Err subModel), Post _ ) ->
+            ( { model | page = Post subModel }, Cmd.none )
+
+        ( PostMsg subMsg, Post subModel ) ->
+            let
+                ( newSubModel, cmd ) =
+                    PostPage.update subMsg subModel
+            in
+                ( { model | page = Post newSubModel }, Cmd.map PostMsg cmd )
 
         ( _, _ ) ->
             ( model, Cmd.none )

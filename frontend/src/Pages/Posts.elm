@@ -1,24 +1,21 @@
 module Pages.Posts exposing (Model, init, view)
 
-import Html exposing (Html, div, span, text)
+import Html exposing (Html, a, div, span, text)
 import Task exposing (Task)
 import GraphQL.Client.Http as GraphQLClient
-import Html.Attributes
+import Html.Attributes as HtmlAttr
 import Css
+import Route exposing (href, Route)
 import Pages.Utils exposing (PageLoadError, pageLoadError)
-import Data.Post exposing (Posts)
-import Request.Post exposing (postsRequest, PostsResponse)
-import Views.Post
+import Data.Post exposing (Post, Posts, stringToId)
+import Request.Post exposing (sendPostsRequest)
+import Views.PostPreview
 import Views.Header
 import Views.SubHeader
 import Views.ContentHeader
 import Views.Cup
 import Styles.Constants exposing (colors)
-
-
-sendPostsRequest : Task GraphQLClient.Error Posts
-sendPostsRequest =
-    GraphQLClient.sendQuery "http://localhost:3000/graphql" postsRequest
+import Styles.Posts exposing (Classes(..), namespace)
 
 
 type alias Model =
@@ -50,29 +47,21 @@ init =
         )
 
 
-styles =
-    Css.asPairs >> Html.Attributes.style
+{ class } =
+    namespace
 
 
-stylesheet =
-    { container =
-        [ Css.displayFlex
-        , Css.flexDirection Css.column
-        , Css.alignItems Css.center
-        , Css.justifyContent Css.spaceAround
-        , Css.height (Css.vh 20)
+style =
+    Css.asPairs >> HtmlAttr.style
+
+
+viewPost : Post -> Html msg
+viewPost post =
+    a
+        [ href (Route.Post (stringToId post.id))
+        , class [ Button ]
         ]
-    , iconContianer =
-        [ Css.displayFlex
-        , Css.alignItems Css.center
-        , Css.justifyContent Css.center
-        ]
-    , tomatoText =
-        [ Css.fontFamilies [ "Moon-Bold" ]
-        , Css.color (Css.hex colors.tomato)
-        , Css.marginLeft (Css.vw 1)
-        ]
-    }
+        [ Views.PostPreview.view post ]
 
 
 view : Model -> Html msg
@@ -82,17 +71,23 @@ view { posts, isFetching, fetchError } =
         , Views.SubHeader.view
         , case ( isFetching, fetchError ) of
             ( True, _ ) ->
-                div [ styles stylesheet.container ]
+                div [ class [ Container ] ]
                     [ Views.Cup.view
-                    , span [ styles [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text "Please Wait..." ]
+                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text "Please Wait..." ]
                     ]
 
             ( False, "" ) ->
                 div []
                     (List.concat
-                        [ [ (Views.ContentHeader.view "" "Posts" "New Post") ]
+                        [ [ (Views.ContentHeader.view
+                                (div [] [])
+                                "Posts"
+                                ""
+                                "New Post"
+                            )
+                          ]
                         , (List.map
-                            Views.Post.view
+                            viewPost
                             posts
                           )
                         ]
@@ -100,11 +95,11 @@ view { posts, isFetching, fetchError } =
 
             ( _, _ ) ->
                 div
-                    [ styles stylesheet.container ]
-                    [ div [ styles stylesheet.iconContianer ]
+                    [ class [ Container ] ]
+                    [ div [ class [ IconContainer ] ]
                         [ Views.Cup.view
-                        , span [ styles stylesheet.tomatoText ] [ text "Uh Oh, Spaghettio" ]
+                        , span [ class [ TomatoText ] ] [ text "Uh Oh, Spaghettio" ]
                         ]
-                    , span [ styles [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text fetchError ]
+                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text fetchError ]
                     ]
         ]

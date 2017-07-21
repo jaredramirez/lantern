@@ -1,4 +1,4 @@
-module Styles.Post exposing (Classes(..), namespace, css)
+module Styles.PostPreview exposing (Classes(..), namespace, css)
 
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
@@ -17,7 +17,7 @@ type Classes
 
 
 namespace =
-    withNamespace "post"
+    withNamespace "postPreview"
 
 
 css =
@@ -35,6 +35,9 @@ css =
             , marginBottom (vw 4)
             , marginRight (vw 3)
             , marginLeft (vw 3)
+            , hover
+                [ boxShadow4 (vh 1) (vw 1) (vh 1) (hex "ccc")
+                ]
             ]
         , class Header
             [ flex (int 1)

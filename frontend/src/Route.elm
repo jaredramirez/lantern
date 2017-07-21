@@ -1,9 +1,11 @@
 module Route exposing (Route(..), href, fromLocation)
 
-import Html exposing (Attribute)
+import Html exposing (Html, Attribute)
 import Html.Attributes as HtmlAttr
+import Html.Events exposing (onClick)
 import Navigation
-import UrlParser exposing (Parser, oneOf, parseHash, s)
+import UrlParser exposing (Parser, oneOf, parseHash, s, (</>))
+import Data.Post as Post
 
 
 -- EXTERNAL
@@ -13,7 +15,8 @@ type Route
     = NotFound
     | Landing
     | Posts
-    | Post
+    | Post Post.Id
+    | NewPost
 
 
 href : Route -> Attribute msg
@@ -38,8 +41,8 @@ routeParser =
     oneOf
         [ UrlParser.map Landing (s "")
         , UrlParser.map Posts (s "posts")
-
-        -- , UrlParser.map Post (s "posts" )
+        , UrlParser.map NewPost (s "posts" </> s "new")
+        , UrlParser.map Post (s "posts" </> Post.idParser)
         , UrlParser.map NotFound (s "*")
         ]
 
@@ -54,6 +57,12 @@ routeToString route =
 
                 Posts ->
                     [ "posts" ]
+
+                NewPost ->
+                    [ "posts", "new" ]
+
+                Post id ->
+                    [ "posts", Post.idToString id ]
 
                 _ ->
                     []

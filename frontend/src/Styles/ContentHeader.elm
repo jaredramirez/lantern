@@ -8,8 +8,11 @@ import Styles.Constants exposing (colors)
 
 type Classes
     = Container
+    | MainContainer
     | MainText
     | SubText
+    | Link
+    | Flex
 
 
 namespace =
@@ -20,22 +23,42 @@ css =
     (stylesheet << Css.Namespace.namespace namespace.name)
         [ class Container
             [ displayFlex
-            , alignItems flexEnd
+            , alignItems center
             , justifyContent spaceAround
-            , height (vh 8)
+            , height (vh 10)
+            , marginTop (vh 2)
+            ]
+        , class MainContainer
+            [ displayFlex
+            , flexDirection column
+            , alignItems center
+            , justifyContent center
+            , backgroundColor (hex colors.cerulean)
+            , borderStyle solid
+            , borderColor (hex colors.slate)
+            , borderWidth (vh 0.5)
+            , height (vh 9)
+            , width (vw 50)
             ]
         , class MainText
             [ fontFamilies [ "Moon-Bold" ]
-            , fontSize (vh 4)
-            , color (hex colors.tomato)
-            , textAlign center
-            , flex (int 2)
+            , fontSize (vh 3)
+            , color (hex colors.babyPowder)
             ]
         , class SubText
+            [ fontFamilies [ "Moon-Light" ]
+            , fontSize (vh 2)
+            , color (hex colors.babyPowder)
+            , marginTop (vh 0.25)
+            ]
+        , class Link
             [ fontFamilies [ "Moon-Bold" ]
-            , fontSize (vh 3)
+            , fontSize (vh 2.5)
+            , textDecoration none
             , color (hex colors.tomato)
             , textAlign center
             , flex (int 1)
             ]
+        , class Flex
+            [ flex (int 1) ]
         ]
