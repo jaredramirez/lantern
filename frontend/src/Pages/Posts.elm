@@ -80,10 +80,9 @@ view { posts, isFetching, fetchError } =
                 div []
                     (List.concat
                         [ [ (Views.ContentHeader.view
-                                (div [] [])
-                                "Posts"
-                                ""
-                                "New Post"
+                                Nothing
+                                ( "Posts", Nothing )
+                                (Just Views.ContentHeader.viewNewPost)
                             )
                           ]
                         , (List.map

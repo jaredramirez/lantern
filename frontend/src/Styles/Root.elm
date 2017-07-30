@@ -14,6 +14,7 @@ import Styles.Landing
 -- Views
 
 import Styles.List
+import Styles.NewPost
 import Styles.Posts
 import Styles.PostPreview
 import Styles.Header
@@ -43,6 +44,7 @@ fileStructure =
         files =
             [ ( Styles.Page.namespace, Styles.Page.css )
             , ( Styles.Landing.namespace, Styles.Landing.css )
+            , ( Styles.NewPost.namespace, Styles.NewPost.css )
             , ( Styles.List.namespace, Styles.List.css )
             , ( Styles.Posts.namespace, Styles.Posts.css )
             , ( Styles.PostPreview.namespace, Styles.PostPreview.css )

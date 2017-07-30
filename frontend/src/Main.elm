@@ -11,7 +11,9 @@ import Pages.Landing as LandingPage
 import Pages.Posts as PostsPage
 import Pages.Post as PostPage
 import Pages.NewPost as NewPostPage
-import Pages.NotFound
+import Pages.Login as LoginPage
+import Pages.SignUp as SignUpPage
+import Pages.NotFound as NotFoundPage
 
 
 type Page
@@ -20,6 +22,8 @@ type Page
     | Posts PostsPage.Model
     | Post PostPage.Model
     | NewPost NewPostPage.Model
+    | Login
+    | SignUp
 
 
 type alias Model =
@@ -55,8 +59,14 @@ view model =
             PostPage.view subModel
                 |> Html.map PostMsg
 
+        Login ->
+            LoginPage.view
+
+        SignUp ->
+            SignUpPage.view
+
         _ ->
-            Pages.NotFound.view
+            NotFoundPage.view
 
 
 routeChange : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -79,6 +89,12 @@ routeChange maybeRoute model =
 
             Just (Route.Post id) ->
                 transitionToRoute Post PostLoaded (PostPage.init id)
+
+            Just Route.Login ->
+                ( { model | page = Login }, Cmd.none )
+
+            Just Route.SignUp ->
+                ( { model | page = SignUp }, Cmd.none )
 
             _ ->
                 ( { model | page = NotFound }

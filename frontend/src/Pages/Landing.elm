@@ -2,7 +2,7 @@ module Pages.Landing exposing (view)
 
 import Html exposing (Html, div, a, span, text)
 import Css
-import Route exposing (Route(Landing, Posts), href)
+import Route exposing (Route(Posts, Login), href)
 import Styles.Constants exposing (colors)
 import Styles.Page exposing (Classes(Backdrop))
 import Styles.Landing exposing (Classes(..))
@@ -38,7 +38,7 @@ view =
             , div
                 [ class [ BoxContainer ] ]
                 [ viewBox "Posts" (Views.ArrowLeft.view colors.babyPowder) Posts
-                , viewBox "Account" (Views.ArrowRight.view colors.babyPowder) Landing
+                , viewBox "Account" (Views.ArrowRight.view colors.babyPowder) Login
                 ]
             ]
         ]

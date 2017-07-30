@@ -17,6 +17,8 @@ type Route
     | Posts
     | Post Post.Id
     | NewPost
+    | Login
+    | SignUp
 
 
 href : Route -> Attribute msg
@@ -43,6 +45,8 @@ routeParser =
         , UrlParser.map Posts (s "posts")
         , UrlParser.map NewPost (s "posts" </> s "new")
         , UrlParser.map Post (s "posts" </> Post.idParser)
+        , UrlParser.map Login (s "login")
+        , UrlParser.map SignUp (s "signup")
         , UrlParser.map NotFound (s "*")
         ]
 
@@ -63,6 +67,12 @@ routeToString route =
 
                 Post id ->
                     [ "posts", Post.idToString id ]
+
+                Login ->
+                    [ "login" ]
+
+                SignUp ->
+                    [ "signup" ]
 
                 _ ->
                     []

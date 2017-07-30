@@ -56,8 +56,8 @@ css =
             , fontSize (vh 2.5)
             , textDecoration none
             , color (hex colors.tomato)
+            , cursor pointer
             , textAlign center
-            , flex (int 1)
             ]
         , class Flex
             [ flex (int 1) ]

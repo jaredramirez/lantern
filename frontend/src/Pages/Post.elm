@@ -2,12 +2,11 @@ module Pages.Post exposing (Model, init, view, Msg, update)
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes as HtmlAttr
-import Html.Events exposing (onClick)
 import Task exposing (Task)
 import Css
 import GraphQL.Client.Http as GraphQLClient
 import Navigation
-import Route exposing (Route)
+import Route exposing (Route, href)
 import Request.Post exposing (sendPostRequest)
 import Data.Post exposing (Post, Id)
 import Views.Header
@@ -101,20 +100,7 @@ stylesheet =
         , Css.borderColor (Css.hex colors.slate)
         , Css.borderWidth (Css.vh 0.5)
         ]
-    , back =
-        [ Css.fontFamilies [ "Moon-Bold" ]
-        , Css.fontSize (Css.vh 2.5)
-        , Css.textDecoration Css.none
-        , Css.color (Css.hex colors.tomato)
-        , Css.textAlign Css.center
-        , Css.cursor Css.pointer
-        ]
     }
-
-
-viewBack : Html Msg
-viewBack =
-    div [ onClick GoBack, style stylesheet.back ] [ text "back" ]
 
 
 view : Model -> Html Msg
@@ -132,13 +118,11 @@ view { post, isFetching, fetchError } =
             ( False, "" ) ->
                 div []
                     [ (Views.ContentHeader.view
-                        viewBack
-                        post.title
-                        (post.author.firstName
-                            ++ " "
-                            ++ post.author.lastName
+                        (Just (Views.ContentHeader.viewBack GoBack))
+                        ( post.title
+                        , Just (post.author.firstName ++ " " ++ post.author.lastName)
                         )
-                        "New Post"
+                        (Just Views.ContentHeader.viewNewPost)
                       )
                     , div [ style stylesheet.bodyContainer ]
                         [ span [ style stylesheet.body ] [ text post.body ]

@@ -1,3 +1,5 @@
+elm-package install;
+
 rm -rf build;
 mkdir build;
 # first 3 args to `elm-live` delgate to `elm-make`
