@@ -5,13 +5,9 @@ import GraphQL.Request.Builder exposing (..)
 import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
 import GraphQL.Client.Http as GraphQLClient
+import Constants exposing (serverUrl)
 import Request.User exposing (userObject)
 import Data.Post exposing (Post, Posts, Id, idToString)
-
-
-serverUrl : String
-serverUrl =
-    "http://localhost:3000/graphql"
 
 
 postObject : ValueSpec NonNull ObjectType Post vars

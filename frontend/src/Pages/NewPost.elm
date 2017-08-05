@@ -3,56 +3,14 @@ module Pages.NewPost exposing (Model, init, view, Msg, update)
 import Html exposing (Html, div, input, span, textarea, button, text)
 import Html.Attributes exposing (type_, placeholder, defaultValue)
 import Html.Events exposing (onInput, onClick)
+import Css
 import Navigation
-import Styles.NewPost exposing (Classes(..), namespace)
+import Pages.Utils exposing (Field, initField, isNothing, validateOne)
 import Views.Header
 import Views.SubHeader
 import Views.ContentHeader
-
-
--- INTERNAL
-
-
-type alias Field =
-    { value : String
-    , error : Maybe String
-    }
-
-
-isNothing : Maybe val -> Bool
-isNothing maybe =
-    if maybe == Nothing then
-        True
-    else
-        False
-
-
-validateOne : String -> Maybe String
-validateOne value =
-    let
-        errorMessage =
-            "Required"
-    in
-        if value == "" then
-            Just errorMessage
-        else
-            Nothing
-
-
-validateAll : String -> String -> ( Bool, Maybe String, Maybe String )
-validateAll title body =
-    let
-        titleError =
-            validateOne title
-
-        bodyError =
-            validateOne body
-
-        isValid =
-            List.all isNothing [ titleError, bodyError ]
-    in
-        ( isValid, titleError, bodyError )
-
+import Views.Form exposing (viewTextField, viewTextArea, viewButton)
+import Styles.Constants exposing (colors)
 
 
 -- MODEL/VIEW/UPDATE
@@ -65,16 +23,31 @@ type alias Model =
     }
 
 
-{ class } =
-    namespace
-
-
 init : Model
 init =
-    { title = Field "" Nothing
-    , body = Field "" Nothing
-    , isCreating = False
+    Model initField initField False
+
+
+stylesheet =
+    { container =
+        [ Css.displayFlex
+        , Css.flexDirection Css.column
+        , Css.alignItems Css.center
+        , Css.justifyContent Css.spaceAround
+        , Css.height (Css.vh 65)
+        ]
+    , line =
+        [ Css.height (Css.vh 0.5)
+        , Css.width (Css.vw 80)
+        , Css.backgroundColor (Css.hex colors.cerulean)
+        , Css.margin (Css.vh 1)
+        , Css.marginBottom (Css.vh 2)
+        ]
     }
+
+
+style =
+    Css.asPairs >> Html.Attributes.style
 
 
 view : Model -> Html Msg
@@ -87,24 +60,11 @@ view model =
             ( "New Post", Nothing )
             Nothing
           )
-        , div [ class [ Container ] ]
-            [ input
-                [ type_ "text"
-                , placeholder "Title"
-                , defaultValue model.title.value
-                , onInput SetTitle
-                , class [ Input, InputTitle ]
-                ]
-                []
-            , textarea
-                [ placeholder "Body..."
-                , defaultValue model.body.value
-                , onInput SetBody
-                , class [ Input, InputBody ]
-                ]
-                []
-            , span [ class [ Line ] ] []
-            , button [ onClick BeginPostCreationIfValid, class [ Button ] ] [ text "Finish" ]
+        , div [ style stylesheet.container ]
+            [ viewTextField ( model.title.value, "Title", False ) SetTitle
+            , viewTextArea ( model.body.value, "Body..." ) SetBody
+            , span [ style stylesheet.line ] []
+            , viewButton "Finish" BeginPostCreationIfValid
             ]
         ]
 
@@ -168,3 +128,22 @@ update msg model =
 
         GoBack ->
             ( model, Navigation.back 1 )
+
+
+
+-- INTERNAL
+
+
+validateAll : String -> String -> ( Bool, Maybe String, Maybe String )
+validateAll title body =
+    let
+        titleError =
+            validateOne title
+
+        bodyError =
+            validateOne body
+
+        isValid =
+            List.all isNothing [ titleError, bodyError ]
+    in
+        ( isValid, titleError, bodyError )

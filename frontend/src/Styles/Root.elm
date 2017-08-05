@@ -14,12 +14,12 @@ import Styles.Landing
 -- Views
 
 import Styles.List
-import Styles.NewPost
 import Styles.Posts
 import Styles.PostPreview
 import Styles.Header
 import Styles.SubHeader
 import Styles.ContentHeader
+import Styles.Form
 
 
 port files : CssFileStructure -> Cmd msg
@@ -44,13 +44,13 @@ fileStructure =
         files =
             [ ( Styles.Page.namespace, Styles.Page.css )
             , ( Styles.Landing.namespace, Styles.Landing.css )
-            , ( Styles.NewPost.namespace, Styles.NewPost.css )
             , ( Styles.List.namespace, Styles.List.css )
             , ( Styles.Posts.namespace, Styles.Posts.css )
             , ( Styles.PostPreview.namespace, Styles.PostPreview.css )
             , ( Styles.Header.namespace, Styles.Header.css )
             , ( Styles.SubHeader.namespace, Styles.SubHeader.css )
             , ( Styles.ContentHeader.namespace, Styles.ContentHeader.css )
+            , ( Styles.Form.namespace, Styles.Form.css )
             ]
     in
         Css.File.toFileStructure (List.map generateFile files)

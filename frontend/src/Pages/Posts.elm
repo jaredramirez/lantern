@@ -5,8 +5,9 @@ import Task exposing (Task)
 import GraphQL.Client.Http as GraphQLClient
 import Html.Attributes as HtmlAttr
 import Css
+import RemoteData exposing (RemoteData(NotAsked, Loading, Success, Failure))
 import Route exposing (href, Route)
-import Pages.Utils exposing (PageLoadError, pageLoadError)
+import Data.Misc exposing (WebData)
 import Data.Post exposing (Post, Posts, stringToId)
 import Request.Post exposing (sendPostsRequest)
 import Views.PostPreview
@@ -19,15 +20,12 @@ import Styles.Posts exposing (Classes(..), namespace)
 
 
 type alias Model =
-    { posts : Posts
-    , isFetching : Bool
-    , fetchError : String
-    }
+    { data : WebData Posts }
 
 
 initModel : Model
 initModel =
-    Model [] True ""
+    Model Loading
 
 
 init : ( Model, Task Model Model )
@@ -35,11 +33,11 @@ init =
     let
         handleSuccess : Posts -> Model
         handleSuccess posts =
-            Model posts False ""
+            Model (Success posts)
 
         handleError : GraphQLClient.Error -> Model
-        handleError _ =
-            Model [] False "Failed to fetch posts. Please try again in a few minutes"
+        handleError error =
+            Model (Failure error)
     in
         ( initModel
         , Task.map handleSuccess sendPostsRequest
@@ -65,40 +63,45 @@ viewPost post =
 
 
 view : Model -> Html msg
-view { posts, isFetching, fetchError } =
+view { data } =
     div []
         [ Views.Header.view "lantern" "an arbitrariliy named blog"
         , Views.SubHeader.view
-        , case ( isFetching, fetchError ) of
-            ( True, _ ) ->
+        , let
+            placeholder : String -> Html msg
+            placeholder message =
                 div [ class [ Container ] ]
                     [ Views.Cup.view
-                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text "Please Wait..." ]
+                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text message ]
                     ]
 
-            ( False, "" ) ->
-                div []
-                    (List.concat
-                        [ [ (Views.ContentHeader.view
-                                Nothing
-                                ( "Posts", Nothing )
-                                (Just Views.ContentHeader.viewNewPost)
-                            )
-                          ]
-                        , (List.map
-                            viewPost
-                            posts
-                          )
-                        ]
-                    )
+            loadingPlaceholder : Html msg
+            loadingPlaceholder =
+                placeholder "Please wait..."
+          in
+            case data of
+                NotAsked ->
+                    loadingPlaceholder
 
-            ( _, _ ) ->
-                div
-                    [ class [ Container ] ]
-                    [ div [ class [ IconContainer ] ]
-                        [ Views.Cup.view
-                        , span [ class [ TomatoText ] ] [ text "Uh Oh, Spaghettio" ]
-                        ]
-                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text fetchError ]
-                    ]
+                Loading ->
+                    loadingPlaceholder
+
+                Failure _ ->
+                    placeholder "Failed to load."
+
+                Success posts ->
+                    div []
+                        (List.concat
+                            [ [ (Views.ContentHeader.view
+                                    Nothing
+                                    ( "Posts", Nothing )
+                                    (Just Views.ContentHeader.viewNewPost)
+                                )
+                              ]
+                            , (List.map
+                                viewPost
+                                posts
+                              )
+                            ]
+                        )
         ]

@@ -4,7 +4,7 @@ import Html exposing (Html, Attribute)
 import Html.Attributes as HtmlAttr
 import Html.Events exposing (onClick)
 import Navigation
-import UrlParser exposing (Parser, oneOf, parseHash, s, (</>))
+import UrlParser exposing (Parser, map, oneOf, parseHash, s, (</>))
 import Data.Post as Post
 
 
@@ -41,13 +41,13 @@ fromLocation location =
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
-        [ UrlParser.map Landing (s "")
-        , UrlParser.map Posts (s "posts")
-        , UrlParser.map NewPost (s "posts" </> s "new")
-        , UrlParser.map Post (s "posts" </> Post.idParser)
-        , UrlParser.map Login (s "login")
-        , UrlParser.map SignUp (s "signup")
-        , UrlParser.map NotFound (s "*")
+        [ map Landing (s "")
+        , map Posts (s "posts")
+        , map NewPost (s "posts" </> s "new")
+        , map Post (s "posts" </> Post.idParser)
+        , map Login (s "login")
+        , map SignUp (s "signup")
+        , map NotFound (s "*")
         ]
 
 

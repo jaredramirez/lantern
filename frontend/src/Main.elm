@@ -22,7 +22,7 @@ type Page
     | Posts PostsPage.Model
     | Post PostPage.Model
     | NewPost NewPostPage.Model
-    | Login
+    | Login LoginPage.Model
     | SignUp
 
 
@@ -59,8 +59,9 @@ view model =
             PostPage.view subModel
                 |> Html.map PostMsg
 
-        Login ->
-            LoginPage.view
+        Login subModel ->
+            LoginPage.view subModel
+                |> Html.map LoginMsg
 
         SignUp ->
             SignUpPage.view
@@ -91,7 +92,7 @@ routeChange maybeRoute model =
                 transitionToRoute Post PostLoaded (PostPage.init id)
 
             Just Route.Login ->
-                ( { model | page = Login }, Cmd.none )
+                ( { model | page = Login LoginPage.init }, Cmd.none )
 
             Just Route.SignUp ->
                 ( { model | page = SignUp }, Cmd.none )
@@ -108,6 +109,7 @@ type Msg
     | PostLoaded (Result PostPage.Model PostPage.Model)
     | PostMsg PostPage.Msg
     | NewPostMsg NewPostPage.Msg
+    | LoginMsg LoginPage.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -141,6 +143,13 @@ update msg model =
                     PostPage.update subMsg subModel
             in
                 ( { model | page = Post newSubModel }, Cmd.map PostMsg cmd )
+
+        ( LoginMsg subMsg, Login subModel ) ->
+            let
+                ( newSubModel, cmd ) =
+                    LoginPage.update subMsg subModel
+            in
+                ( { model | page = Login newSubModel }, Cmd.map LoginMsg cmd )
 
         ( _, _ ) ->
             ( model, Cmd.none )
