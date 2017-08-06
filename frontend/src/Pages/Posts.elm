@@ -5,7 +5,7 @@ import Task exposing (Task)
 import GraphQL.Client.Http as GraphQLClient
 import Html.Attributes as HtmlAttr
 import Css
-import RemoteData exposing (RemoteData(NotAsked, Loading, Success, Failure))
+import RemoteData exposing (RemoteData(..))
 import Route exposing (href, Route)
 import Data.Misc exposing (WebData)
 import Data.Post exposing (Post, Posts, stringToId)

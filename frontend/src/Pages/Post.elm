@@ -6,7 +6,7 @@ import Task exposing (Task)
 import Css
 import GraphQL.Client.Http as GraphQLClient
 import Navigation
-import RemoteData exposing (RemoteData(NotAsked, Loading, Success, Failure))
+import RemoteData exposing (RemoteData(..))
 import Route exposing (Route, href)
 import Data.Misc exposing (WebData)
 import Data.Post exposing (Post, Posts, stringToId)
@@ -44,46 +44,6 @@ init id =
         , Task.map handleSuccess (sendPostRequest id)
             |> Task.mapError handleError
         )
-
-
-style =
-    Css.asPairs >> HtmlAttr.style
-
-
-stylesheet =
-    { container =
-        [ Css.displayFlex
-        , Css.flexDirection Css.column
-        , Css.alignItems Css.center
-        , Css.justifyContent Css.spaceAround
-        , Css.height (Css.vh 20)
-        ]
-    , iconContainer =
-        [ Css.displayFlex
-        , Css.alignItems Css.center
-        , Css.justifyContent Css.center
-        ]
-    , tomatoText =
-        [ Css.fontFamilies [ "Moon-Bold" ]
-        , Css.color (Css.hex colors.tomato)
-        , Css.marginLeft (Css.vw 1)
-        ]
-    , bodyContainer =
-        [ Css.displayFlex
-        , Css.alignItems Css.center
-        , Css.justifyContent Css.center
-        , Css.marginTop (Css.vh 3)
-        ]
-    , body =
-        [ Css.fontFamilies [ "Moon-Bold" ]
-        , Css.color (Css.hex colors.slate)
-        , Css.padding (Css.vh 3)
-        , Css.width (Css.vw 90)
-        , Css.borderStyle Css.solid
-        , Css.borderColor (Css.hex colors.slate)
-        , Css.borderWidth (Css.vh 0.5)
-        ]
-    }
 
 
 view : Model -> Html Msg
@@ -138,3 +98,47 @@ update msg model =
     case msg of
         GoBack ->
             ( model, Navigation.back 1 )
+
+
+
+-- STYLES
+
+
+style =
+    Css.asPairs >> HtmlAttr.style
+
+
+stylesheet =
+    { container =
+        [ Css.displayFlex
+        , Css.flexDirection Css.column
+        , Css.alignItems Css.center
+        , Css.justifyContent Css.spaceAround
+        , Css.height (Css.vh 20)
+        ]
+    , iconContainer =
+        [ Css.displayFlex
+        , Css.alignItems Css.center
+        , Css.justifyContent Css.center
+        ]
+    , tomatoText =
+        [ Css.fontFamilies [ "Moon-Bold" ]
+        , Css.color (Css.hex colors.tomato)
+        , Css.marginLeft (Css.vw 1)
+        ]
+    , bodyContainer =
+        [ Css.displayFlex
+        , Css.alignItems Css.center
+        , Css.justifyContent Css.center
+        , Css.marginTop (Css.vh 3)
+        ]
+    , body =
+        [ Css.fontFamilies [ "Moon-Bold" ]
+        , Css.color (Css.hex colors.slate)
+        , Css.padding (Css.vh 3)
+        , Css.width (Css.vw 90)
+        , Css.borderStyle Css.solid
+        , Css.borderColor (Css.hex colors.slate)
+        , Css.borderWidth (Css.vh 0.5)
+        ]
+    }
