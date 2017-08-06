@@ -39,13 +39,13 @@ view model =
         , Views.SubHeader.view
         , (Views.ContentHeader.view
             (Just (Views.ContentHeader.viewBack GoBack))
-            ( "New Post", Nothing )
+            ( "new post", Nothing )
             Nothing
           )
         , div [ style stylesheet.container ]
-            [ viewTextField ( model.title.value, "Title", False ) SetTitle
-            , viewTextArea ( model.body.value, "Body..." ) SetBody
-            , viewButton "Finish" BeginPostCreationIfValid
+            [ viewTextField ( model.title.value, "title", False ) SetTitle
+            , viewTextArea ( model.body.value, "body..." ) SetBody
+            , viewButton "finish" BeginPostCreationIfValid
             ]
         ]
 

@@ -6,11 +6,12 @@ import Html.Events exposing (onClick)
 import Task exposing (Task)
 import Navigation
 import Route exposing (Route, href, fromLocation)
+import Data.Session exposing (Session)
 import Pages.Landing as LandingPage
 import Pages.Posts as PostsPage
 import Pages.Post as PostPage
 import Pages.NewPost as NewPostPage
-import Pages.Login as LoginPage
+import Pages.Login as LoginPage exposing (ExternalMsg)
 import Pages.SignUp as SignUpPage
 import Pages.NotFound as NotFoundPage
 
@@ -26,12 +27,16 @@ type Page
 
 
 type alias Model =
-    { page : Page }
+    { page : Page
+    , session : Maybe Session
+    }
 
 
 initalModel : Model
 initalModel =
-    { page = Landing }
+    { page = Landing
+    , session = Nothing
+    }
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -154,10 +159,20 @@ update msg model =
 
         ( LoginMsg subMsg, Login subModel ) ->
             let
-                ( newSubModel, cmd ) =
+                ( ( newSubModel, cmd ), externalMsg ) =
                     LoginPage.update subMsg subModel
             in
-                ( { model | page = Login newSubModel }, Cmd.map LoginMsg cmd )
+                case externalMsg of
+                    LoginPage.NoOp ->
+                        ( { model | page = Login newSubModel }, Cmd.map LoginMsg cmd )
+
+                    LoginPage.SetSession session ->
+                        ( { model
+                            | page = Login newSubModel
+                            , session = Just session
+                          }
+                        , Cmd.map LoginMsg cmd
+                        )
 
         ( _, _ ) ->
             ( model, Cmd.none )

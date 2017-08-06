@@ -18,6 +18,6 @@ view post =
             ]
         , div [ class [ Body ] ]
             [ div [ class [ BodyText ] ] [ text post.body ]
-            , div [ class [ Link ] ] [ text "See Full Post" ]
+            , div [ class [ Link ] ] [ text "see full post" ]
             ]
         ]

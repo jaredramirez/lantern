@@ -10,13 +10,12 @@ import Route exposing (href, Route)
 import Data.Misc exposing (WebData)
 import Data.Post exposing (Post, Posts, stringToId)
 import Request.Post exposing (sendPostsRequest)
-import Constants exposing (fontLight)
+import Constants exposing (fontLight, colors)
 import Views.PostPreview
 import Views.Header
 import Views.SubHeader
 import Views.ContentHeader
 import Views.Cup
-import Styles.Constants exposing (colors)
 import Styles.Posts exposing (Classes(..), namespace)
 
 
