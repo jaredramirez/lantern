@@ -1,13 +1,17 @@
 module Pages.Login exposing (Model, init, view, Msg, update)
 
+import Task exposing (Task)
 import Html exposing (Html, div, span, text)
 import Html.Attributes
 import Css
+import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
 import RemoteData exposing (RemoteData(..))
+import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
 import Pages.Misc exposing (Field, initField)
+import Constants exposing (fontBold)
 import Views.Header
 import Views.SubHeader
 import Views.Form exposing (viewTextField, viewButton)
@@ -27,20 +31,34 @@ init =
 
 
 view : Model -> Html Msg
-view model =
+view { email, password, showPassword, loginRequest } =
     div []
         [ Views.Header.view "lantern" "an arbitrariliy named blog"
         , Views.SubHeader.view
         , div [ style stylesheet.container ]
             [ span [ style stylesheet.label ] [ text "Login" ]
-            , viewTextField ( model.email.value, "Email", False ) SetEmail
+            , viewTextField ( email.value, "Email", False ) SetEmail
             , div [ style stylesheet.buttonContainer ]
                 [ viewTextField
-                    ( model.password.value, "Password", not model.showPassword )
+                    ( password.value, "Password", not showPassword )
                     SetPassword
                 , div [ style stylesheet.button ] [ viewButton "show" TogglePasswordVisible ]
                 ]
-            , viewButton "Submit" BeginLoginIfValid
+            , case loginRequest of
+                NotAsked ->
+                    viewButton "Submit" BeginLoginIfValid
+
+                Loading ->
+                    viewButton "Loading..." BeginLoginIfValid
+
+                Success session ->
+                    div [] [ span [] [ text "SUCCESS" ] ]
+
+                Failure _ ->
+                    div []
+                        [ viewButton "Submit" BeginLoginIfValid
+                        , span [] [ text "Failed." ]
+                        ]
             ]
         ]
 
@@ -50,8 +68,8 @@ type Msg
     | SetPassword String
     | TogglePasswordVisible
     | BeginLoginIfValid
-    | LoginSuccess
-    | LoginError
+    | LoginSuccess Session
+    | LoginError Error
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -90,13 +108,15 @@ update msg model =
                         model.password.value
 
                     maybeErrors =
-                        ( List.head (emailValidator passwordValue)
+                        ( List.head (emailValidator emailValue)
                         , List.head (passwordValidator passwordValue)
                         )
                 in
                     case maybeErrors of
                         ( Nothing, Nothing ) ->
-                            ( model, Cmd.none )
+                            ( { model | loginRequest = Loading }
+                            , loginRequest emailValue passwordValue
+                            )
 
                         ( maybeEmailError, maybePasswordError ) ->
                             ( { model
@@ -106,11 +126,26 @@ update msg model =
                             , Cmd.none
                             )
 
-            LoginSuccess ->
-                ( model, Cmd.none )
+            LoginSuccess session ->
+                ( { model | loginRequest = Success session }, Cmd.none )
 
-            LoginError ->
-                ( model, Cmd.none )
+            LoginError error ->
+                ( { model | loginRequest = Failure error }, Cmd.none )
+
+
+loginRequest : String -> String -> Cmd Msg
+loginRequest email password =
+    let
+        handleResponse : AuthenticateResponse -> Msg
+        handleResponse response =
+            case response of
+                Ok session ->
+                    LoginSuccess session
+
+                Err error ->
+                    LoginError error
+    in
+        Task.attempt handleResponse (sendAuthenticateRequest { email = email, password = password })
 
 
 
@@ -130,7 +165,7 @@ stylesheet =
         , Css.height (Css.vh 50)
         ]
     , label =
-        [ Css.fontFamilies [ "Moon-Bold" ]
+        [ Css.fontFamilies [ fontBold ]
         , Css.fontSize (Css.vw 2)
         ]
     , buttonContainer =

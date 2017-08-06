@@ -3,7 +3,7 @@ module Styles.Page exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -34,7 +34,7 @@ css =
             ]
         , class Text
             [ fontSize (vh 3)
-            , fontFamilies [ "Moon-Light" ]
+            , fontFamilies [ fontLight ]
             , color (hex colors.slate)
             ]
         , class Link

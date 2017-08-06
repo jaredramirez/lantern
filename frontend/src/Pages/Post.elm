@@ -12,11 +12,11 @@ import Data.Misc exposing (WebData)
 import Data.Post exposing (Post, Posts, stringToId)
 import Request.Post exposing (sendPostRequest)
 import Data.Post exposing (Post, Id)
+import Constants exposing (fontLight, fontBold, colors)
 import Views.Header
 import Views.SubHeader
 import Views.ContentHeader
 import Views.Cup
-import Styles.Constants exposing (colors)
 
 
 type alias Model =
@@ -56,7 +56,7 @@ view { data } =
             placeholder message =
                 div [ style stylesheet.container ]
                     [ Views.Cup.view
-                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text message ]
+                    , span [ style [ Css.fontFamilies [ fontLight ] ] ] [ text message ]
                     ]
 
             loadingPlaceholder : Html msg
@@ -122,7 +122,7 @@ stylesheet =
         , Css.justifyContent Css.center
         ]
     , tomatoText =
-        [ Css.fontFamilies [ "Moon-Bold" ]
+        [ Css.fontFamilies [ fontBold ]
         , Css.color (Css.hex colors.tomato)
         , Css.marginLeft (Css.vw 1)
         ]
@@ -133,7 +133,7 @@ stylesheet =
         , Css.marginTop (Css.vh 3)
         ]
     , body =
-        [ Css.fontFamilies [ "Moon-Bold" ]
+        [ Css.fontFamilies [ fontBold ]
         , Css.color (Css.hex colors.slate)
         , Css.padding (Css.vh 3)
         , Css.width (Css.vw 90)

@@ -3,7 +3,7 @@ module Styles.Landing exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -29,7 +29,7 @@ css =
         , class Label
             [ color (hex colors.tomato)
             , fontSize (vh 5)
-            , fontFamilies [ "Moon-Bold" ]
+            , fontFamilies [ fontBold ]
             , padding (vh 10)
             ]
         , class BoxContainer
@@ -53,6 +53,6 @@ css =
         , class Text
             [ color (hex colors.babyPowder)
             , fontSize (vh 4)
-            , fontFamilies [ "Moon-Light" ]
+            , fontFamilies [ fontLight ]
             ]
         ]

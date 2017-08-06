@@ -36,12 +36,16 @@ const UserType = new GraphQLObjectType({
 
 const UserInputType = new GraphQLInputObjectType({
   name: 'UserInputType',
-  fields: Object.assign({}, getFields(), {
+  fields: {
+    email: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Email of the user.',
+    },
     password: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Password of the user.',
     },
-  }),
+  },
 });
 
 const UserUpdateInputType = new GraphQLInputObjectType({

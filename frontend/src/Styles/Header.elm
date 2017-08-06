@@ -3,7 +3,7 @@ module Styles.Header exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Css.Namespace
 import Html.CssHelpers exposing (withNamespace)
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -29,11 +29,11 @@ css =
         , class Title
             [ color (hex colors.tomato)
             , fontSize (vh 6)
-            , fontFamilies [ "Moon-Bold" ]
+            , fontFamilies [ fontBold ]
             ]
         , class SubTitle
             [ color (hex "FE5D4C")
             , fontSize (vh 3)
-            , fontFamilies [ "Moon-Light" ]
+            , fontFamilies [ fontLight ]
             ]
         ]

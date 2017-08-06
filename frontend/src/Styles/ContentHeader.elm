@@ -3,7 +3,7 @@ module Styles.ContentHeader exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Css.Namespace
 import Html.CssHelpers exposing (withNamespace)
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -41,18 +41,18 @@ css =
             , width (vw 50)
             ]
         , class MainText
-            [ fontFamilies [ "Moon-Bold" ]
+            [ fontFamilies [ fontBold ]
             , fontSize (vh 3)
             , color (hex colors.babyPowder)
             ]
         , class SubText
-            [ fontFamilies [ "Moon-Light" ]
+            [ fontFamilies [ fontLight ]
             , fontSize (vh 2)
             , color (hex colors.babyPowder)
             , marginTop (vh 0.25)
             ]
         , class Link
-            [ fontFamilies [ "Moon-Bold" ]
+            [ fontFamilies [ fontBold ]
             , fontSize (vh 2.5)
             , textDecoration none
             , color (hex colors.tomato)

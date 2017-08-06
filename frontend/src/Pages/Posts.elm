@@ -10,6 +10,7 @@ import Route exposing (href, Route)
 import Data.Misc exposing (WebData)
 import Data.Post exposing (Post, Posts, stringToId)
 import Request.Post exposing (sendPostsRequest)
+import Constants exposing (fontLight)
 import Views.PostPreview
 import Views.Header
 import Views.SubHeader
@@ -72,7 +73,7 @@ view { data } =
             placeholder message =
                 div [ class [ Container ] ]
                     [ Views.Cup.view
-                    , span [ style [ Css.fontFamilies [ "Moon-Light" ] ] ] [ text message ]
+                    , span [ style [ Css.fontFamilies [ fontLight ] ] ] [ text message ]
                     ]
 
             loadingPlaceholder : Html msg
@@ -94,7 +95,7 @@ view { data } =
                         (List.concat
                             [ [ (Views.ContentHeader.view
                                     Nothing
-                                    ( "Posts", Nothing )
+                                    ( "posts", Nothing )
                                     (Just Views.ContentHeader.viewNewPost)
                                 )
                               ]

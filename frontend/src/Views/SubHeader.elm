@@ -12,6 +12,6 @@ import Route exposing (Route(Posts, Login), href)
 view : Html msg
 view =
     div [ class [ Container ] ]
-        [ a [ class [ Section ], href Posts ] [ span [ class [ Text ] ] [ text "Posts" ] ]
-        , a [ class [ Section ], href Login ] [ span [ class [ Text ] ] [ text "Account" ] ]
+        [ a [ class [ Section ], href Posts ] [ span [ class [ Text ] ] [ text "posts" ] ]
+        , a [ class [ Section ], href Login ] [ span [ class [ Text ] ] [ text "account" ] ]
         ]

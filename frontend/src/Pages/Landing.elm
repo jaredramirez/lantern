@@ -3,9 +3,9 @@ module Pages.Landing exposing (view)
 import Html exposing (Html, div, a, span, text)
 import Css
 import Route exposing (Route(Posts, Login), href)
-import Styles.Constants exposing (colors)
 import Styles.Page exposing (Classes(Backdrop))
 import Styles.Landing exposing (Classes(..))
+import Constants exposing (colors)
 import Views.Header
 import Views.ArrowRight
 import Views.ArrowLeft

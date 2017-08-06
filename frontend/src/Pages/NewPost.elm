@@ -10,11 +10,11 @@ import RemoteData exposing (RemoteData(..))
 import Data.Misc exposing (WebData)
 import Data.Post exposing (Post)
 import Pages.Misc exposing (Field, initField)
+import Constants exposing (colors)
 import Views.Header
 import Views.SubHeader
 import Views.ContentHeader
 import Views.Form exposing (viewTextField, viewTextArea, viewButton)
-import Styles.Constants exposing (colors)
 
 
 -- MODEL/VIEW/UPDATE

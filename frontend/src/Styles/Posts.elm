@@ -3,7 +3,7 @@ module Styles.Posts exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -34,7 +34,7 @@ css =
             , justifyContent center
             ]
         , class TomatoText
-            [ fontFamilies [ "Moon-Bold" ]
+            [ fontFamilies [ fontBold ]
             , color (hex colors.tomato)
             , marginLeft (vw 1)
             ]

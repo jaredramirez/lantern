@@ -3,7 +3,7 @@ module Styles.SubHeader exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (Namespace, withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -33,8 +33,8 @@ css =
             , textDecoration none
             ]
         , class Text
-            [ fontSize (vh 2.5)
-            , fontFamilies [ "Moon-Light" ]
+            [ fontSize (vh 3)
+            , fontFamilies [ fontLight ]
             , color (hex colors.babyPowder)
             , textDecoration none
             ]

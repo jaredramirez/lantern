@@ -3,7 +3,7 @@ module Styles.PostPreview exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -49,13 +49,13 @@ css =
             ]
         , class Title
             [ fontSize (vh 3)
-            , fontFamilies [ "Moon-Bold" ]
+            , fontFamilies [ fontBold ]
             , color (hex colors.babyPowder)
             ]
         , class Author
             [ marginTop (vh 1)
             , fontSize (vh 2)
-            , fontFamilies [ "Moon-Light" ]
+            , fontFamilies [ fontLight ]
             , color (hex colors.babyPowder)
             ]
         , class Body
@@ -68,13 +68,13 @@ css =
             , marginRight (vw 2)
             ]
         , class BodyText
-            [ fontSize (vh 2)
-            , fontFamilies [ "Moon-Light" ]
+            [ fontSize (vh 2.5)
+            , fontFamilies [ fontLight ]
             , color (hex colors.slate)
             ]
         , class Link
-            [ fontSize (vh 2)
-            , fontFamilies [ "Moon-Light" ]
+            [ fontSize (vh 3)
+            , fontFamilies [ fontLight ]
             , color (hex colors.tomato)
             ]
         ]

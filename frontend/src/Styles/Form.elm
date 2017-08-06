@@ -3,7 +3,7 @@ module Styles.Form exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -23,7 +23,7 @@ css =
             [ borderStyle solid
             , borderColor (hex colors.slate)
             , borderWidth (vh 0.5)
-            , fontFamilies [ "Moon-Light" ]
+            , fontFamilies [ fontLight ]
             , paddingTop (vh 2)
             , paddingBottom (vh 2)
             , paddingLeft (vw 2)
@@ -48,7 +48,7 @@ css =
             , alignItems center
             , justifyContent center
             , height (vh 5)
-            , fontFamilies [ "Moon-Bold" ]
+            , fontFamilies [ fontBold ]
             , fontSize (vw 2)
             , borderStyle none
             , backgroundColor (hex colors.babyPowder)

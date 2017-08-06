@@ -3,7 +3,7 @@ module Styles.List exposing (Classes(..), namespace, css)
 import Css exposing (..)
 import Html.CssHelpers exposing (withNamespace)
 import Css.Namespace
-import Styles.Constants exposing (colors)
+import Constants exposing (fontLight, fontBold, colors)
 
 
 type Classes
@@ -27,7 +27,7 @@ css =
             ]
         , class Title
             [ fontSize (vh 4)
-            , fontFamilies [ "Moon-Bold" ]
+            , fontFamilies [ fontBold ]
             , color (hex colors.slate)
             , textDecoration none
             ]
@@ -39,7 +39,7 @@ css =
             ]
         , class Item
             [ fontSize (vh 2.5)
-            , fontFamilies [ "Moon-Light" ]
+            , fontFamilies [ fontLight ]
             , color (hex colors.slate)
             , margin (vh 2)
             ]
