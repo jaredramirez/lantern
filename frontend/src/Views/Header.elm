@@ -1,17 +1,56 @@
-module Views.Header exposing (view)
+module Views.Header exposing (view, viewOnlyTop)
 
 import Html exposing (Html, div, span, a, text)
-import Styles.Header exposing (Classes(..), namespace)
-import Route exposing (Route, href)
+import Route exposing (Route(..), href)
+import Styles.Misc exposing (getClass)
+import Styles.Header as HeaderStyles
+import Styles.SubHeader as SubHeaderStyles
 
 
-{ class } =
-    namespace
+headerClass =
+    getClass HeaderStyles.namespace
 
 
-view : String -> String -> Html msg
-view title subTitle =
-    div [ class [ Bar ] ]
-        [ span [ class [ Title ] ] [ text title ]
-        , span [ class [ SubTitle ] ] [ text subTitle ]
+viewHeader : Html msg
+viewHeader =
+    div [ headerClass [ HeaderStyles.Bar ] ]
+        [ span [ headerClass [ HeaderStyles.Title ] ] [ text "LANTERN" ]
+        , span [ headerClass [ HeaderStyles.SubTitle ] ] [ text "AN ARBITRARILY NAMED BLOG" ]
+        ]
+
+
+subHeaderClass =
+    getClass SubHeaderStyles.namespace
+
+
+viewSubHeader : Html msg
+viewSubHeader =
+    div [ subHeaderClass [ SubHeaderStyles.Container ] ]
+        [ a [ subHeaderClass [ SubHeaderStyles.Section ], href Posts ]
+            [ span
+                [ subHeaderClass [ SubHeaderStyles.Text ] ]
+                [ text "POSTS" ]
+            ]
+        , a [ subHeaderClass [ SubHeaderStyles.Section ], href Login ]
+            [ span
+                [ subHeaderClass [ SubHeaderStyles.Text ] ]
+                [ text "ACCOUNT" ]
+            ]
+        ]
+
+
+viewOnlyTop : Html msg -> Html msg
+viewOnlyTop page =
+    div []
+        [ viewHeader
+        , page
+        ]
+
+
+view : Html msg -> Html msg
+view page =
+    div []
+        [ viewHeader
+        , viewSubHeader
+        , page
         ]

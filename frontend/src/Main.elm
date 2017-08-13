@@ -7,6 +7,7 @@ import Task exposing (Task)
 import Navigation
 import Route exposing (Route, href, fromLocation)
 import Data.Session exposing (Session)
+import Views.Header as HeaderView
 import Pages.Landing as LandingPage
 import Pages.Posts as PostsPage
 import Pages.Post as PostPage
@@ -46,32 +47,52 @@ init location =
         initalModel
 
 
-view : Model -> Html Msg
-view model =
-    case model.page of
-        Landing ->
-            LandingPage.view
-
-        Posts subModel ->
-            PostsPage.view subModel
-
-        Post subModel ->
-            PostPage.view subModel
-                |> Html.map PostMsg
-
-        NewPost subModel ->
-            NewPostPage.view subModel
-                |> Html.map NewPostMsg
-
-        Login subModel ->
-            LoginPage.view subModel
-                |> Html.map LoginMsg
-
-        SignUp ->
-            SignUpPage.view
+viewAuthenciatePage : Maybe Session -> Html Msg -> Html Msg
+viewAuthenciatePage session view =
+    case session of
+        Nothing ->
+            div [] [ span [] [ text "Please Login" ] ]
 
         _ ->
-            NotFoundPage.view
+            view
+
+
+view : Model -> Html Msg
+view model =
+    let
+        onlyAuthenticated =
+            viewAuthenciatePage model.session
+    in
+        case model.page of
+            Landing ->
+                HeaderView.viewOnlyTop LandingPage.view
+
+            Posts subModel ->
+                HeaderView.view (PostsPage.view subModel)
+
+            Post subModel ->
+                HeaderView.view
+                    (PostPage.view subModel
+                        |> Html.map PostMsg
+                    )
+
+            NewPost subModel ->
+                (HeaderView.view << onlyAuthenticated)
+                    (NewPostPage.view subModel
+                        |> Html.map NewPostMsg
+                    )
+
+            Login subModel ->
+                HeaderView.view
+                    (LoginPage.view subModel
+                        |> Html.map LoginMsg
+                    )
+
+            SignUp ->
+                HeaderView.view SignUpPage.view
+
+            _ ->
+                HeaderView.viewOnlyTop NotFoundPage.view
 
 
 routeChange : Maybe Route -> Model -> ( Model, Cmd Msg )

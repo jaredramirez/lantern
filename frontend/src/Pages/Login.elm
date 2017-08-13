@@ -12,8 +12,6 @@ import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
 import Pages.Misc exposing (Field, initField)
 import Constants exposing (fontBold)
-import Views.Header
-import Views.SubHeader
 import Views.Form exposing (viewTextField, viewButton)
 
 
@@ -32,34 +30,30 @@ init =
 
 view : Model -> Html Msg
 view { email, password, showPassword, loginRequest } =
-    div []
-        [ Views.Header.view "lantern" "an arbitrariliy named blog"
-        , Views.SubHeader.view
-        , div [ style stylesheet.container ]
-            [ span [ style stylesheet.label ] [ text "login" ]
-            , viewTextField ( email.value, "email", False ) SetEmail
-            , div [ style stylesheet.buttonContainer ]
-                [ viewTextField
-                    ( password.value, "password", not showPassword )
-                    SetPassword
-                , div [ style stylesheet.button ] [ viewButton "show" TogglePasswordVisible ]
-                ]
-            , case loginRequest of
-                NotAsked ->
-                    viewButton "submit" BeginLoginIfValid
-
-                Loading ->
-                    viewButton "loading..." BeginLoginIfValid
-
-                Success session ->
-                    div [] [ span [] [ text "SUCCESS" ] ]
-
-                Failure _ ->
-                    div []
-                        [ viewButton "submit" BeginLoginIfValid
-                        , span [] [ text "failed." ]
-                        ]
+    div [ style stylesheet.container ]
+        [ span [ style stylesheet.label ] [ text "login" ]
+        , viewTextField ( email.value, "email", False ) SetEmail
+        , div [ style stylesheet.buttonContainer ]
+            [ viewTextField
+                ( password.value, "password", not showPassword )
+                SetPassword
+            , div [ style stylesheet.button ] [ viewButton "show" TogglePasswordVisible ]
             ]
+        , case loginRequest of
+            NotAsked ->
+                viewButton "submit" BeginLoginIfValid
+
+            Loading ->
+                viewButton "loading..." BeginLoginIfValid
+
+            Success session ->
+                div [] [ span [] [ text "SUCCESS" ] ]
+
+            Failure _ ->
+                div []
+                    [ viewButton "submit" BeginLoginIfValid
+                    , span [] [ text "failed." ]
+                    ]
         ]
 
 

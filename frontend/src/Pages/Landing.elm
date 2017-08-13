@@ -6,7 +6,6 @@ import Route exposing (Route(Posts, Login), href)
 import Styles.Page exposing (Classes(Backdrop))
 import Styles.Landing exposing (Classes(..))
 import Constants exposing (colors)
-import Views.Header
 import Views.ArrowRight
 import Views.ArrowLeft
 
@@ -31,8 +30,7 @@ viewBox label icon route =
 view : Html msg
 view =
     div [ pageNamespace.class [ Backdrop ] ]
-        [ Views.Header.view "lantern" "an arbitrarily named blog"
-        , div
+        [ div
             [ class [ Container ] ]
             [ div [ class [ Label ] ] [ text "jump to" ]
             , div

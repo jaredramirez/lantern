@@ -11,8 +11,6 @@ import Data.Misc exposing (WebData)
 import Data.Post exposing (Post)
 import Pages.Misc exposing (Field, initField)
 import Constants exposing (colors)
-import Views.Header
-import Views.SubHeader
 import Views.ContentHeader
 import Views.Form exposing (viewTextField, viewTextArea, viewButton)
 
@@ -35,9 +33,7 @@ init =
 view : Model -> Html Msg
 view model =
     div []
-        [ Views.Header.view "lantern" "an arbitrariliy named blog"
-        , Views.SubHeader.view
-        , (Views.ContentHeader.view
+        [ (Views.ContentHeader.view
             (Just (Views.ContentHeader.viewBack GoBack))
             ( "new post", Nothing )
             Nothing

@@ -6,7 +6,6 @@ import Css
 import Route exposing (Route(Landing), href)
 import Styles.Page exposing (Classes(..), namespace)
 import Views.Cup
-import Views.Header
 import Views.List
 
 
@@ -27,8 +26,7 @@ quotes =
 view : Html msg
 view =
     div [ class [ Backdrop ] ]
-        [ Views.Header.view "404 Not Found" ""
-        , div
+        [ div
             [ class [ Container ]
             , styles
                 [ Css.height (Css.vh 50)

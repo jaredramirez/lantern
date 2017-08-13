@@ -13,8 +13,6 @@ import Data.Post exposing (Post, Posts, stringToId)
 import Request.Post exposing (sendPostRequest)
 import Data.Post exposing (Post, Id)
 import Constants exposing (fontLight, fontBold, colors)
-import Views.Header
-import Views.SubHeader
 import Views.ContentHeader
 import Views.Cup
 
@@ -48,45 +46,41 @@ init id =
 
 view : Model -> Html Msg
 view { data } =
-    div []
-        [ Views.Header.view "lantern" "an arbitrariliy named blog"
-        , Views.SubHeader.view
-        , let
-            placeholder : String -> Html msg
-            placeholder message =
-                div [ style stylesheet.container ]
-                    [ Views.Cup.view
-                    , span [ style [ Css.fontFamilies [ fontLight ] ] ] [ text message ]
-                    ]
+    let
+        placeholder : String -> Html msg
+        placeholder message =
+            div [ style stylesheet.container ]
+                [ Views.Cup.view
+                , span [ style [ Css.fontFamilies [ fontLight ] ] ] [ text message ]
+                ]
 
-            loadingPlaceholder : Html msg
-            loadingPlaceholder =
-                placeholder "Please Wait..."
-          in
-            case data of
-                NotAsked ->
-                    loadingPlaceholder
+        loadingPlaceholder : Html msg
+        loadingPlaceholder =
+            placeholder "Please Wait..."
+    in
+        case data of
+            NotAsked ->
+                loadingPlaceholder
 
-                Loading ->
-                    loadingPlaceholder
+            Loading ->
+                loadingPlaceholder
 
-                Failure _ ->
-                    placeholder "Error"
+            Failure _ ->
+                placeholder "Error"
 
-                Success post ->
-                    div []
-                        [ (Views.ContentHeader.view
-                            (Just (Views.ContentHeader.viewBack GoBack))
-                            ( post.title
-                            , Just (post.author.firstName ++ " " ++ post.author.lastName)
-                            )
-                            (Just Views.ContentHeader.viewNewPost)
-                          )
-                        , div [ style stylesheet.bodyContainer ]
-                            [ span [ style stylesheet.body ] [ text post.body ]
-                            ]
+            Success post ->
+                div []
+                    [ (Views.ContentHeader.view
+                        (Just (Views.ContentHeader.viewBack GoBack))
+                        ( post.title
+                        , Just (post.author.firstName ++ " " ++ post.author.lastName)
+                        )
+                        (Just Views.ContentHeader.viewNewPost)
+                      )
+                    , div [ style stylesheet.bodyContainer ]
+                        [ span [ style stylesheet.body ] [ text post.body ]
                         ]
-        ]
+                    ]
 
 
 type Msg

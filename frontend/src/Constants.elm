@@ -8,12 +8,12 @@ serverUrl =
 
 fontLight : String
 fontLight =
-    "KayakSans-Light"
+    "Gilroy-Light"
 
 
 fontBold : String
 fontBold =
-    "KayakSans-Bold"
+    "Gilroy-Bold"
 
 
 type alias Colors =
