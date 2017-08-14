@@ -7,7 +7,7 @@ import Css
 import Navigation
 import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
-import Route exposing (Route(Posts), routeToString)
+import Route exposing (Route(Posts))
 import RemoteData exposing (RemoteData(..))
 import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
@@ -33,7 +33,7 @@ init =
 view : Model -> Html Msg
 view { email, password, showPassword, loginRequest } =
     div [ style stylesheet.container ]
-        [ span [ style stylesheet.label ] [ text "login" ]
+        [ span [ style stylesheet.label ] [ text "LOGIN" ]
         , viewTextField ( email.value, "email", False ) SetEmail
         , div [ style stylesheet.buttonContainer ]
             [ viewTextField
@@ -43,18 +43,18 @@ view { email, password, showPassword, loginRequest } =
             ]
         , case loginRequest of
             NotAsked ->
-                viewButton "submit" BeginLoginIfValid
+                viewButton "SUBMIT" BeginLoginIfValid
 
             Loading ->
-                viewButton "loading..." BeginLoginIfValid
+                viewButton "LOADING..." BeginLoginIfValid
 
             Success session ->
                 div [] []
 
             Failure _ ->
                 div []
-                    [ viewButton "submit" BeginLoginIfValid
-                    , span [] [ text "failed." ]
+                    [ viewButton "SUBMIT" BeginLoginIfValid
+                    , span [] [ text "Failed to login." ]
                     ]
         ]
 
@@ -133,7 +133,7 @@ update msg model =
 
             LoginSuccess session ->
                 ( ( { model | loginRequest = Success session }
-                  , Navigation.newUrl (routeToString Posts)
+                  , Route.newUrl Posts
                   )
                 , SetSession session
                 )

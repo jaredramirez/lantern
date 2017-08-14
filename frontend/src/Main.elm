@@ -5,6 +5,7 @@ import Html.Attributes as HtmlAttr
 import Html.Events exposing (onClick)
 import Task exposing (Task)
 import Navigation
+import Ports
 import Route exposing (Route, href, fromLocation)
 import Data.Session exposing (Session)
 import Views.Header as HeaderView
@@ -150,6 +151,7 @@ type Msg
     | PostMsg PostPage.Msg
     | NewPostMsg NewPostPage.Msg
     | LoginMsg LoginPage.Msg
+    | SetSession (Maybe Session)
     | Logout
 
 
@@ -209,11 +211,16 @@ update msg model =
             ( model, Cmd.none )
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.map SetSession (Ports.onSessionChange (\_ -> Nothing))
+
+
 main : Program Never Model Msg
 main =
     Navigation.program (fromLocation >> RouteChange)
         { init = init
         , view = view
         , update = update
-        , subscriptions = (\_ -> Sub.none)
+        , subscriptions = subscriptions
         }

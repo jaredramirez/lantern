@@ -9,5 +9,8 @@
   "scripts": {
     "dev": "./scripts/dev.sh",
     "build:css": "./scripts/css.sh"
+  },
+  "dependencies": {
+    "localforage": "^1.5.0"
   }
 }

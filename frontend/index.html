@@ -17,13 +17,31 @@
     <link rel="stylesheet" href="build/subheader.css" />
     <link rel="stylesheet" href="build/contentHeader.css" />
     <link rel="stylesheet" href="build/form.css" />
+
     <script src="build/elm.js"></script>
     <!-- END FILES GENERATED WITH './scripts/build.sh' -->
 
+    <script src="node_modules/localforage/dist/localforage.js"></script>
   </head>
   <body style="margin: 0px;">
     <script type="text/javascript">
       var app = Elm.Main.fullscreen();
+      var key = 'session';
+
+      localforage.getItem(key)
+        .then(function (value) {
+          app.ports.onSessionChange.send(value);
+        })
+        .catch(function (err) {
+          console.log('Failed to load from localforage: ' + err.message);
+        });
+
+      app.ports.saveSession.subscribe(function (sessionString) {
+        localforage.setItem(key, sessionString)
+          .catch(function (err) {
+            console.log('Failed to save to localforage: ' + err.message);
+          });
+      });
     </script>
   </body>
 </html>
