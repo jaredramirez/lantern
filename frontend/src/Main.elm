@@ -47,8 +47,8 @@ init location =
         initalModel
 
 
-viewAuthenciatePage : Maybe Session -> Html Msg -> Html Msg
-viewAuthenciatePage session view =
+viewAuthenciatedPage : Maybe Session -> Html Msg -> Html Msg
+viewAuthenciatedPage session view =
     case session of
         Nothing ->
             div [] [ span [] [ text "Please Login" ] ]
@@ -60,39 +60,45 @@ viewAuthenciatePage session view =
 view : Model -> Html Msg
 view model =
     let
-        onlyAuthenticated =
-            viewAuthenciatePage model.session
+        viewHeader =
+            HeaderView.view model.session
+
+        viewAuthenticated =
+            (viewAuthenciatedPage model.session) << viewHeader
+
+        viewMinimalHeader =
+            HeaderView.viewMinimal model.session
     in
         case model.page of
             Landing ->
-                HeaderView.viewOnlyTop LandingPage.view
+                viewMinimalHeader LandingPage.view
 
             Posts subModel ->
-                HeaderView.view (PostsPage.view subModel)
+                viewHeader (PostsPage.view subModel)
 
             Post subModel ->
-                HeaderView.view
+                viewHeader
                     (PostPage.view subModel
                         |> Html.map PostMsg
                     )
 
             NewPost subModel ->
-                (HeaderView.view << onlyAuthenticated)
+                viewAuthenticated
                     (NewPostPage.view subModel
                         |> Html.map NewPostMsg
                     )
 
             Login subModel ->
-                HeaderView.view
+                viewHeader
                     (LoginPage.view subModel
                         |> Html.map LoginMsg
                     )
 
             SignUp ->
-                HeaderView.view SignUpPage.view
+                viewHeader SignUpPage.view
 
             _ ->
-                HeaderView.viewOnlyTop NotFoundPage.view
+                viewMinimalHeader NotFoundPage.view
 
 
 routeChange : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -144,6 +150,7 @@ type Msg
     | PostMsg PostPage.Msg
     | NewPostMsg NewPostPage.Msg
     | LoginMsg LoginPage.Msg
+    | Logout
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -194,6 +201,9 @@ update msg model =
                           }
                         , Cmd.map LoginMsg cmd
                         )
+
+        ( Logout, _ ) ->
+            ( { model | session = Nothing }, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )

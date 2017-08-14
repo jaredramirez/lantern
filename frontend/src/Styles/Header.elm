@@ -10,6 +10,7 @@ type Classes
     = Bar
     | Title
     | SubTitle
+    | Logout
 
 
 namespace =
@@ -32,8 +33,17 @@ css =
             , fontFamilies [ fontBold ]
             ]
         , class SubTitle
-            [ color (hex "FE5D4C")
+            [ color (hex colors.tomato)
             , fontSize (vh 3)
             , fontFamilies [ fontLight ]
+            ]
+        , class Logout
+            [ color (hex colors.babyPowder)
+            , fontFamilies [ fontLight ]
+            , fontSize (vh 2)
+            , position absolute
+            , right (vw 2)
+            , top (vh 2)
+            , cursor pointer
             ]
         ]

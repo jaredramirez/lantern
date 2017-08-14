@@ -28,7 +28,7 @@ css =
             ]
         , class Label
             [ color (hex colors.tomato)
-            , fontSize (vh 5)
+            , fontSize (vh 4)
             , fontFamilies [ fontBold ]
             , padding (vh 10)
             ]

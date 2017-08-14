@@ -1,4 +1,4 @@
-module Route exposing (Route(..), href, fromLocation)
+module Route exposing (Route(..), href, fromLocation, routeToString)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes as HtmlAttr
@@ -34,23 +34,6 @@ fromLocation location =
         parseHash routeParser location
 
 
-
--- INTERNAL
-
-
-routeParser : Parser (Route -> a) a
-routeParser =
-    oneOf
-        [ map Landing (s "")
-        , map Posts (s "posts")
-        , map NewPost (s "posts" </> s "new")
-        , map Post (s "posts" </> Post.idParser)
-        , map Login (s "login")
-        , map SignUp (s "signup")
-        , map NotFound (s "*")
-        ]
-
-
 routeToString : Route -> String
 routeToString route =
     let
@@ -78,3 +61,20 @@ routeToString route =
                     []
     in
         "/#/" ++ String.join "/" routeParts
+
+
+
+-- INTERNAL
+
+
+routeParser : Parser (Route -> a) a
+routeParser =
+    oneOf
+        [ map Landing (s "")
+        , map Posts (s "posts")
+        , map NewPost (s "posts" </> s "new")
+        , map Post (s "posts" </> Post.idParser)
+        , map Login (s "login")
+        , map SignUp (s "signup")
+        , map NotFound (s "*")
+        ]

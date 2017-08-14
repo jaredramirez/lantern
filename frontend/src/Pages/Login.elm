@@ -4,8 +4,10 @@ import Task exposing (Task)
 import Html exposing (Html, div, span, text)
 import Html.Attributes
 import Css
+import Navigation
 import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
+import Route exposing (Route(Posts), routeToString)
 import RemoteData exposing (RemoteData(..))
 import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
@@ -47,7 +49,7 @@ view { email, password, showPassword, loginRequest } =
                 viewButton "loading..." BeginLoginIfValid
 
             Success session ->
-                div [] [ span [] [ text "SUCCESS" ] ]
+                div [] []
 
             Failure _ ->
                 div []
@@ -130,7 +132,11 @@ update msg model =
                             )
 
             LoginSuccess session ->
-                ( ( { model | loginRequest = Success session }, Cmd.none ), SetSession session )
+                ( ( { model | loginRequest = Success session }
+                  , Navigation.newUrl (routeToString Posts)
+                  )
+                , SetSession session
+                )
 
             LoginError error ->
                 ( ( { model | loginRequest = Failure error }, Cmd.none ), NoOp )

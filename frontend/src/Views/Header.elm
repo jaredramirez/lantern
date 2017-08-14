@@ -1,7 +1,8 @@
-module Views.Header exposing (view, viewOnlyTop)
+module Views.Header exposing (view, viewMinimal)
 
 import Html exposing (Html, div, span, a, text)
 import Route exposing (Route(..), href)
+import Data.Session exposing (Session)
 import Styles.Misc exposing (getClass)
 import Styles.Header as HeaderStyles
 import Styles.SubHeader as SubHeaderStyles
@@ -17,6 +18,14 @@ viewHeader =
         [ span [ headerClass [ HeaderStyles.Title ] ] [ text "LANTERN" ]
         , span [ headerClass [ HeaderStyles.SubTitle ] ] [ text "AN ARBITRARILY NAMED BLOG" ]
         ]
+
+
+viewLogout : Maybe Session -> Html msg
+viewLogout maybeSession =
+    if maybeSession /= Nothing then
+        span [ headerClass [ HeaderStyles.Logout ] ] [ text "LOGOUT" ]
+    else
+        span [] []
 
 
 subHeaderClass =
@@ -39,18 +48,11 @@ viewSubHeader =
         ]
 
 
-viewOnlyTop : Html msg -> Html msg
-viewOnlyTop page =
-    div []
-        [ viewHeader
-        , page
-        ]
+viewMinimal : Maybe Session -> Html msg -> Html msg
+viewMinimal maybeSession subview =
+    div [] [ viewHeader, viewLogout maybeSession, subview ]
 
 
-view : Html msg -> Html msg
-view page =
-    div []
-        [ viewHeader
-        , viewSubHeader
-        , page
-        ]
+view : Maybe Session -> Html msg -> Html msg
+view maybeSession page =
+    div [] [ (viewMinimal maybeSession viewSubHeader), page ]
