@@ -61,13 +61,13 @@ view : Model -> Html Msg
 view model =
     let
         viewHeader =
-            HeaderView.view model.session
+            HeaderView.view ( model.session, Logout )
 
         viewAuthenticated =
             (viewAuthenciatedPage model.session) << viewHeader
 
         viewMinimalHeader =
-            HeaderView.viewMinimal model.session
+            HeaderView.viewMinimal ( model.session, Logout )
     in
         case model.page of
             Landing ->

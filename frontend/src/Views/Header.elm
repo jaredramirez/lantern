@@ -1,31 +1,12 @@
 module Views.Header exposing (view, viewMinimal)
 
 import Html exposing (Html, div, span, a, text)
+import Html.Events exposing (onClick)
 import Route exposing (Route(..), href)
 import Data.Session exposing (Session)
 import Styles.Misc exposing (getClass)
 import Styles.Header as HeaderStyles
 import Styles.SubHeader as SubHeaderStyles
-
-
-headerClass =
-    getClass HeaderStyles.namespace
-
-
-viewHeader : Html msg
-viewHeader =
-    div [ headerClass [ HeaderStyles.Bar ] ]
-        [ span [ headerClass [ HeaderStyles.Title ] ] [ text "LANTERN" ]
-        , span [ headerClass [ HeaderStyles.SubTitle ] ] [ text "AN ARBITRARILY NAMED BLOG" ]
-        ]
-
-
-viewLogout : Maybe Session -> Html msg
-viewLogout maybeSession =
-    if maybeSession /= Nothing then
-        span [ headerClass [ HeaderStyles.Logout ] ] [ text "LOGOUT" ]
-    else
-        span [] []
 
 
 subHeaderClass =
@@ -48,11 +29,37 @@ viewSubHeader =
         ]
 
 
-viewMinimal : Maybe Session -> Html msg -> Html msg
-viewMinimal maybeSession subview =
-    div [] [ viewHeader, viewLogout maybeSession, subview ]
+headerClass =
+    getClass HeaderStyles.namespace
 
 
-view : Maybe Session -> Html msg -> Html msg
-view maybeSession page =
-    div [] [ (viewMinimal maybeSession viewSubHeader), page ]
+viewHeader : Html msg
+viewHeader =
+    div [ headerClass [ HeaderStyles.Bar ] ]
+        [ span [ headerClass [ HeaderStyles.Title ] ] [ text "LANTERN" ]
+        , span [ headerClass [ HeaderStyles.SubTitle ] ] [ text "AN ARBITRARILY NAMED BLOG" ]
+        ]
+
+
+type alias SessionData msg =
+    ( Maybe Session, msg )
+
+
+viewLogout : SessionData msg -> Html msg
+viewLogout ( maybeSession, logoutMsg ) =
+    if maybeSession /= Nothing then
+        span
+            [ headerClass [ HeaderStyles.Logout ], onClick logoutMsg ]
+            [ text "LOGOUT" ]
+    else
+        span [] []
+
+
+viewMinimal : SessionData msg -> Html msg -> Html msg
+viewMinimal sessionData subview =
+    div [] [ viewHeader, viewLogout sessionData, subview ]
+
+
+view : SessionData msg -> Html msg -> Html msg
+view sessionData page =
+    div [] [ (viewMinimal sessionData viewSubHeader), page ]
