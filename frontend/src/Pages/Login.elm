@@ -7,8 +7,9 @@ import Css
 import Navigation
 import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
-import Route exposing (Route(Posts))
 import RemoteData exposing (RemoteData(..))
+import Ports
+import Route exposing (Route(Posts))
 import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
@@ -133,7 +134,7 @@ update msg model =
 
             LoginSuccess session ->
                 ( ( { model | loginRequest = Success session }
-                  , Route.newUrl Posts
+                  , Cmd.batch [ Route.newUrl Posts, Ports.saveSession session ]
                   )
                 , SetSession session
                 )

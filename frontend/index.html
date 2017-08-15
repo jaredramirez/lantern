@@ -33,13 +33,20 @@
           app.ports.onSessionChange.send(value);
         })
         .catch(function (err) {
-          console.log('Failed to load from localforage: ' + err.message);
+          console.log('Failed to load session: ' + err.message);
         });
 
-      app.ports.saveSession.subscribe(function (sessionString) {
-        localforage.setItem(key, sessionString)
+      app.ports.saveSession.subscribe(function (session) {
+        localforage.setItem(key, session)
           .catch(function (err) {
-            console.log('Failed to save to localforage: ' + err.message);
+            console.log('Failed to save session: ' + err.message);
+          });
+      });
+
+      app.ports.resetSession.subscribe(function () {
+        localforage.setItem(key, {})
+          .catch(function (err) {
+            console.log('Failed to reset session: ' + err.message);
           });
       });
     </script>

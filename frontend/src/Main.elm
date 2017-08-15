@@ -4,6 +4,7 @@ import Html exposing (Html, Attribute, div, span, button, a, text, ul, li)
 import Html.Attributes as HtmlAttr
 import Html.Events exposing (onClick)
 import Task exposing (Task)
+import Json.Decode exposing (decodeValue)
 import Navigation
 import Ports
 import Route exposing (Route, href, fromLocation)
@@ -205,7 +206,10 @@ update msg model =
                         )
 
         ( Logout, _ ) ->
-            ( { model | session = Nothing }, Cmd.none )
+            ( { model | session = Nothing }, Ports.resetSession () )
+
+        ( SetSession maybeSession, _ ) ->
+            ( { model | session = maybeSession }, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -213,7 +217,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.map SetSession (Ports.onSessionChange (\_ -> Nothing))
+    Sub.map SetSession
+        (Ports.onSessionChange
+            (Result.toMaybe << decodeValue Data.Session.decoder)
+        )
 
 
 main : Program Never Model Msg
