@@ -9,9 +9,9 @@ import Navigation
 import RemoteData exposing (RemoteData(..))
 import Route exposing (Route, href)
 import Data.Misc exposing (WebData)
-import Data.Post exposing (Post, Posts, stringToId)
+import Data.Post exposing (Post, Posts)
 import Request.Post exposing (sendPostRequest)
-import Data.Post exposing (Post, Id)
+import Data.Post exposing (Post, Id(Id))
 import Constants exposing (fontLight, fontBold, colors)
 import Views.ContentHeader
 import Views.Cup

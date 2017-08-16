@@ -8,7 +8,7 @@ import Css
 import RemoteData exposing (RemoteData(..))
 import Route exposing (href, Route)
 import Data.Misc exposing (WebData)
-import Data.Post exposing (Post, Posts, stringToId)
+import Data.Post exposing (Post, Posts, Id(Id))
 import Request.Post exposing (sendPostsRequest)
 import Constants exposing (fontLight, colors)
 import Views.PostPreview
@@ -54,7 +54,7 @@ style =
 viewPost : Post -> Html msg
 viewPost post =
     a
-        [ href (Route.Post (stringToId post.id))
+        [ href (Route.Post (Id post.id))
         , class [ Button ]
         ]
         [ Views.PostPreview.view post ]

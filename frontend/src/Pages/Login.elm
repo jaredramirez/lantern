@@ -9,7 +9,7 @@ import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
 import RemoteData exposing (RemoteData(..))
 import Ports
-import Route exposing (Route(Posts))
+import Route exposing (Route)
 import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
@@ -23,12 +23,13 @@ type alias Model =
     , password : Field
     , showPassword : Bool
     , loginRequest : WebData Session
+    , afterLoginRoute : Route
     }
 
 
-init : Model
-init =
-    Model initField initField False NotAsked
+init : Route -> Model
+init route =
+    Model initField initField False NotAsked route
 
 
 view : Model -> Html Msg
@@ -134,7 +135,7 @@ update msg model =
 
             LoginSuccess session ->
                 ( ( { model | loginRequest = Success session }
-                  , Cmd.batch [ Route.newUrl Posts, Ports.saveSession session ]
+                  , Cmd.batch [ Route.newUrl model.afterLoginRoute, Ports.saveSession session ]
                   )
                 , SetSession session
                 )

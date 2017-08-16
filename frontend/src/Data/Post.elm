@@ -1,4 +1,4 @@
-module Data.Post exposing (Post, Posts, idParser, idToString, stringToId, Id(Id))
+module Data.Post exposing (Post, Posts, idParser, Id(Id), idToString)
 
 import UrlParser exposing (Parser, custom)
 import Data.User exposing (User)
@@ -29,8 +29,3 @@ idParser =
 idToString : Id -> String
 idToString (Id id) =
     id
-
-
-stringToId : String -> Id
-stringToId id =
-    Id id

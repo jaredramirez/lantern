@@ -2,7 +2,7 @@ module Views.Header exposing (view, viewMinimal)
 
 import Html exposing (Html, div, span, a, text)
 import Html.Events exposing (onClick)
-import Route exposing (Route(..), href)
+import Route exposing (Route(Posts, Account), href)
 import Data.Session exposing (Session)
 import Styles.Misc exposing (getClass)
 import Styles.Header as HeaderStyles
@@ -21,7 +21,7 @@ viewSubHeader =
                 [ subHeaderClass [ SubHeaderStyles.Text ] ]
                 [ text "POSTS" ]
             ]
-        , a [ subHeaderClass [ SubHeaderStyles.Section ], href Login ]
+        , a [ subHeaderClass [ SubHeaderStyles.Section ], href Account ]
             [ span
                 [ subHeaderClass [ SubHeaderStyles.Text ] ]
                 [ text "ACCOUNT" ]
@@ -47,12 +47,17 @@ type alias SessionData msg =
 
 viewLogout : SessionData msg -> Html msg
 viewLogout ( maybeSession, logoutMsg ) =
-    if maybeSession /= Nothing then
-        span
-            [ headerClass [ HeaderStyles.Logout ], onClick logoutMsg ]
-            [ text "LOGOUT" ]
-    else
-        span [] []
+    case maybeSession of
+        Just session ->
+            div [ headerClass [ HeaderStyles.Session ] ]
+                [ span []
+                    [ text ("Hello " ++ session.user.firstName ++ " | ") ]
+                , span [ headerClass [ HeaderStyles.Logout ], onClick logoutMsg ]
+                    [ text "Logout" ]
+                ]
+
+        Nothing ->
+            span [] []
 
 
 viewMinimal : SessionData msg -> Html msg -> Html msg

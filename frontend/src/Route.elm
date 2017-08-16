@@ -4,7 +4,7 @@ import Html exposing (Html, Attribute)
 import Html.Attributes as HtmlAttr
 import Html.Events exposing (onClick)
 import Navigation
-import UrlParser exposing (Parser, map, oneOf, parseHash, s, (</>))
+import UrlParser exposing (Parser, map, oneOf, parseHash, s, (</>), custom)
 import Data.Post as Post
 
 
@@ -15,9 +15,10 @@ type Route
     = NotFound
     | Landing
     | Posts
-    | Post Post.Id
     | NewPost
-    | Login
+    | Post Post.Id
+    | Account
+    | Login Route
     | SignUp
 
 
@@ -48,6 +49,37 @@ modifyUrl =
 -- INTERNAL
 
 
+loginRouteToString : Route -> String
+loginRouteToString route =
+    case route of
+        Account ->
+            "account"
+
+        NewPost ->
+            "newPost"
+
+        _ ->
+            "posts"
+
+
+loginStringToRoute : String -> Route
+loginStringToRoute string =
+    case string of
+        "account" ->
+            Account
+
+        "newPost" ->
+            NewPost
+
+        _ ->
+            Posts
+
+
+loginRouteParser : Parser (Route -> a) a
+loginRouteParser =
+    custom "ROUTE" (loginStringToRoute >> Ok)
+
+
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
@@ -55,7 +87,8 @@ routeParser =
         , map Posts (s "posts")
         , map NewPost (s "posts" </> s "new")
         , map Post (s "posts" </> Post.idParser)
-        , map Login (s "login")
+        , map Account (s "account")
+        , map Login (s "login" </> loginRouteParser)
         , map SignUp (s "signup")
         , map NotFound (s "*")
         ]
@@ -78,8 +111,11 @@ routeToString route =
                 Post id ->
                     [ "posts", Post.idToString id ]
 
-                Login ->
-                    [ "login" ]
+                Account ->
+                    [ "account" ]
+
+                Login route ->
+                    [ "login", loginRouteToString route ]
 
                 SignUp ->
                     [ "signup" ]

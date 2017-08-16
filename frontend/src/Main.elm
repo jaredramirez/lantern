@@ -12,8 +12,9 @@ import Data.Session exposing (Session)
 import Views.Header as HeaderView
 import Pages.Landing as LandingPage
 import Pages.Posts as PostsPage
-import Pages.Post as PostPage
 import Pages.NewPost as NewPostPage
+import Pages.Post as PostPage
+import Pages.Account as AccountPage
 import Pages.Login as LoginPage exposing (ExternalMsg)
 import Pages.SignUp as SignUpPage
 import Pages.NotFound as NotFoundPage
@@ -23,8 +24,9 @@ type Page
     = NotFound
     | Landing
     | Posts PostsPage.Model
-    | Post PostPage.Model
     | NewPost NewPostPage.Model
+    | Post PostPage.Model
+    | Account
     | Login LoginPage.Model
     | SignUp
 
@@ -78,17 +80,20 @@ view model =
             Posts subModel ->
                 viewHeader (PostsPage.view subModel)
 
+            NewPost subModel ->
+                viewAuthenticated
+                    (NewPostPage.view subModel
+                        |> Html.map NewPostMsg
+                    )
+
             Post subModel ->
                 viewHeader
                     (PostPage.view subModel
                         |> Html.map PostMsg
                     )
 
-            NewPost subModel ->
-                viewAuthenticated
-                    (NewPostPage.view subModel
-                        |> Html.map NewPostMsg
-                    )
+            Account ->
+                viewHeader AccountPage.view
 
             Login subModel ->
                 viewHeader
@@ -116,9 +121,16 @@ routeChange maybeRoute model =
             , Task.attempt toMsg initTask
             )
 
-        transition : (model -> Page) -> model -> ( Model, Cmd msg )
+        transition : (model -> Page) -> model -> ( Model, Cmd Msg )
         transition page initPage =
             ( { model | page = page initPage }, Cmd.none )
+
+        requireAuthentication : Route -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+        requireAuthentication route ( model_, msg_ ) =
+            if model_.session == Nothing then
+                ( model_, Route.modifyUrl (Route.Login route) )
+            else
+                ( model_, msg_ )
     in
         case maybeRoute of
             Just Route.Landing ->
@@ -127,14 +139,19 @@ routeChange maybeRoute model =
             Just Route.Posts ->
                 transitionAndLoad Posts PostsLoad PostsPage.init
 
+            Just Route.NewPost ->
+                transition NewPost NewPostPage.init
+                    |> requireAuthentication Route.NewPost
+
             Just (Route.Post id) ->
                 transitionAndLoad Post PostLoad (PostPage.init id)
 
-            Just Route.NewPost ->
-                transition NewPost NewPostPage.init
+            Just Route.Account ->
+                ( { model | page = Account }, Cmd.none )
+                    |> requireAuthentication Route.Account
 
-            Just Route.Login ->
-                transition Login LoginPage.init
+            Just (Route.Login afterLoginRoute) ->
+                transition Login (LoginPage.init afterLoginRoute)
 
             Just Route.SignUp ->
                 ( { model | page = SignUp }, Cmd.none )

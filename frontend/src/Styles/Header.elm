@@ -10,6 +10,7 @@ type Classes
     = Bar
     | Title
     | SubTitle
+    | Session
     | Logout
 
 
@@ -37,13 +38,15 @@ css =
             , fontSize (vh 3)
             , fontFamilies [ fontLight ]
             ]
-        , class Logout
+        , class Session
             [ color (hex colors.babyPowder)
             , fontFamilies [ fontLight ]
             , fontSize (vh 2)
             , position absolute
             , right (vw 2)
             , top (vh 2)
-            , cursor pointer
+            , cursor default
             ]
+        , class Logout
+            [ cursor pointer ]
         ]
