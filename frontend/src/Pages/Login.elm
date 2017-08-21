@@ -9,7 +9,7 @@ import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
 import RemoteData exposing (RemoteData(..))
 import Ports
-import Route exposing (Route)
+import Route exposing (Route, newUrl)
 import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
@@ -32,8 +32,8 @@ init route =
     Model initField initField False NotAsked route
 
 
-view : Model -> Html Msg
-view { email, password, showPassword, loginRequest } =
+view : ( Model, Route ) -> Html Msg
+view ( { email, password, showPassword, loginRequest }, afterLoginRoute ) =
     div [ style stylesheet.container ]
         [ span [ style stylesheet.label ] [ text "LOGIN" ]
         , viewTextField ( email.value, "email", False ) SetEmail
@@ -45,17 +45,17 @@ view { email, password, showPassword, loginRequest } =
             ]
         , case loginRequest of
             NotAsked ->
-                viewButton "SUBMIT" BeginLoginIfValid
+                viewButton "SUBMIT" (BeginLoginIfValid afterLoginRoute)
 
             Loading ->
-                viewButton "LOADING..." BeginLoginIfValid
+                viewButton "LOADING..." (BeginLoginIfValid afterLoginRoute)
 
             Success session ->
                 div [] []
 
             Failure _ ->
                 div []
-                    [ viewButton "SUBMIT" BeginLoginIfValid
+                    [ viewButton "SUBMIT" (BeginLoginIfValid afterLoginRoute)
                     , span [] [ text "Failed to login." ]
                     ]
         ]
@@ -70,8 +70,8 @@ type Msg
     = SetEmail String
     | SetPassword String
     | TogglePasswordVisible
-    | BeginLoginIfValid
-    | LoginSuccess Session
+    | BeginLoginIfValid Route
+    | LoginSuccess Session Route
     | LoginError Error
 
 
@@ -102,7 +102,7 @@ update msg model =
             TogglePasswordVisible ->
                 ( ( { model | showPassword = not model.showPassword }, Cmd.none ), NoOp )
 
-            BeginLoginIfValid ->
+            BeginLoginIfValid route ->
                 let
                     emailValue =
                         model.email.value
@@ -118,7 +118,7 @@ update msg model =
                     case maybeErrors of
                         ( Nothing, Nothing ) ->
                             ( ( { model | loginRequest = Loading }
-                              , loginRequest emailValue passwordValue
+                              , loginRequest emailValue passwordValue route
                               )
                             , NoOp
                             )
@@ -133,9 +133,9 @@ update msg model =
                             , NoOp
                             )
 
-            LoginSuccess session ->
+            LoginSuccess session afterLoginRoute ->
                 ( ( { model | loginRequest = Success session }
-                  , Cmd.batch [ Route.newUrl model.afterLoginRoute, Ports.saveSession session ]
+                  , Cmd.batch [ Route.newUrl afterLoginRoute, Ports.saveSession session ]
                   )
                 , SetSession session
                 )
@@ -144,14 +144,14 @@ update msg model =
                 ( ( { model | loginRequest = Failure error }, Cmd.none ), NoOp )
 
 
-loginRequest : String -> String -> Cmd Msg
-loginRequest email password =
+loginRequest : String -> String -> Route -> Cmd Msg
+loginRequest email password afterLoginRoute =
     let
         handleResponse : AuthenticateResponse -> Msg
         handleResponse response =
             case response of
                 Ok session ->
-                    LoginSuccess session
+                    LoginSuccess session afterLoginRoute
 
                 Err error ->
                     LoginError error

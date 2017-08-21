@@ -34,6 +34,7 @@ type Page
 type alias Model =
     { page : Page
     , session : Maybe Session
+    , afterLoginRoute : Route
     }
 
 
@@ -41,6 +42,7 @@ initalModel : Model
 initalModel =
     { page = Landing
     , session = Nothing
+    , afterLoginRoute = Route.Posts
     }
 
 
@@ -97,7 +99,7 @@ view model =
 
             Login subModel ->
                 viewHeader
-                    (LoginPage.view subModel
+                    (LoginPage.view ( subModel, model.afterLoginRoute )
                         |> Html.map LoginMsg
                     )
 
@@ -128,7 +130,7 @@ routeChange maybeRoute model =
         requireAuthentication : Route -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
         requireAuthentication route ( model_, msg_ ) =
             if model_.session == Nothing then
-                ( model_, Route.modifyUrl (Route.Login route) )
+                ( { model_ | afterLoginRoute = route }, Route.modifyUrl Route.Login )
             else
                 ( model_, msg_ )
     in
@@ -150,8 +152,8 @@ routeChange maybeRoute model =
                 ( { model | page = Account }, Cmd.none )
                     |> requireAuthentication Route.Account
 
-            Just (Route.Login afterLoginRoute) ->
-                transition Login (LoginPage.init afterLoginRoute)
+            Just Route.Login ->
+                transition Login (LoginPage.init model.afterLoginRoute)
 
             Just Route.SignUp ->
                 ( { model | page = SignUp }, Cmd.none )
