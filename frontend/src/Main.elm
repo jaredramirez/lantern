@@ -7,7 +7,7 @@ import Task exposing (Task)
 import Json.Decode exposing (decodeValue)
 import Navigation
 import Ports
-import Route exposing (Route, href, fromLocation)
+import Route exposing (Route, href, fromLocation, newUrl)
 import Data.Session exposing (Session)
 import Views.Header as HeaderView
 import Pages.Landing as LandingPage
@@ -26,7 +26,7 @@ type Page
     | Posts PostsPage.Model
     | NewPost NewPostPage.Model
     | Post PostPage.Model
-    | Account
+    | Account AccountPage.Model
     | Login LoginPage.Model
     | SignUp
 
@@ -67,13 +67,13 @@ view : Model -> Html Msg
 view model =
     let
         viewHeader =
-            HeaderView.view ( model.session, Logout )
+            HeaderView.view ( model.session, NavigateToLogin, Logout )
 
         viewAuthenticated =
             (viewAuthenciatedPage model.session) << viewHeader
 
         viewMinimalHeader =
-            HeaderView.viewMinimal ( model.session, Logout )
+            HeaderView.viewMinimal ( model.session, NavigateToLogin, Logout )
     in
         case model.page of
             Landing ->
@@ -94,8 +94,11 @@ view model =
                         |> Html.map PostMsg
                     )
 
-            Account ->
-                viewHeader AccountPage.view
+            Account subModel ->
+                viewHeader
+                    (AccountPage.view subModel model.session
+                        |> Html.map AccountMsg
+                    )
 
             Login subModel ->
                 viewHeader
@@ -149,7 +152,7 @@ routeChange maybeRoute model =
                 transitionAndLoad Post PostLoad (PostPage.init id)
 
             Just Route.Account ->
-                ( { model | page = Account }, Cmd.none )
+                transition Account AccountPage.init
                     |> requireAuthentication Route.Account
 
             Just Route.Login ->
@@ -171,7 +174,9 @@ type Msg
     | PostMsg PostPage.Msg
     | NewPostMsg NewPostPage.Msg
     | LoginMsg LoginPage.Msg
+    | AccountMsg AccountPage.Msg
     | SetSession (Maybe Session)
+    | NavigateToLogin
     | Logout
 
 
@@ -224,11 +229,21 @@ update msg model =
                         , Cmd.map LoginMsg cmd
                         )
 
-        ( Logout, _ ) ->
-            ( { model | session = Nothing }, Ports.resetSession () )
+        ( AccountMsg subMsg, Account subModel ) ->
+            let
+                ( newSubModel, cmd ) =
+                    AccountPage.update subMsg subModel
+            in
+                ( { model | page = Account newSubModel }, Cmd.map AccountMsg cmd )
 
         ( SetSession maybeSession, _ ) ->
             ( { model | session = maybeSession }, Cmd.none )
+
+        ( NavigateToLogin, _ ) ->
+            ( { model | afterLoginRoute = Route.Posts }, newUrl Route.Account )
+
+        ( Logout, _ ) ->
+            ( { model | session = Nothing }, Ports.resetSession () )
 
         ( _, _ ) ->
             ( model, Cmd.none )

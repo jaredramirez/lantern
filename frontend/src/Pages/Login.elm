@@ -14,7 +14,7 @@ import Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
 import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
 import Pages.Misc exposing (Field, initField)
-import Constants exposing (fontBold)
+import Constants exposing (colors, fontBold)
 import Views.Form exposing (viewTextField, viewButton)
 
 
@@ -58,6 +58,7 @@ view ( { email, password, showPassword, loginRequest }, afterLoginRoute ) =
                     [ viewButton "SUBMIT" (BeginLoginIfValid afterLoginRoute)
                     , span [] [ text "Failed to login." ]
                     ]
+        , span [ style stylesheet.signUp ] [ text "Or Sign Up" ]
         ]
 
 
@@ -178,6 +179,7 @@ stylesheet =
     , label =
         [ Css.fontFamilies [ fontBold ]
         , Css.fontSize (Css.vw 2)
+        , Css.color (Css.hex colors.tomato)
         ]
     , buttonContainer =
         [ Css.displayFlex
@@ -188,5 +190,11 @@ stylesheet =
     , button =
         [ Css.position Css.absolute
         , Css.marginLeft (Css.pct 25)
+        ]
+    , signUp =
+        [ Css.fontFamilies [ fontBold ]
+        , Css.fontSize (Css.vw 2)
+        , Css.color (Css.hex colors.tomato)
+        , Css.cursor Css.pointer
         ]
     }
