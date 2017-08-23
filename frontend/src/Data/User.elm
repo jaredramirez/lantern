@@ -1,4 +1,4 @@
-module Data.User exposing (User, UpdateUserVars, decoder)
+module Data.User exposing (User, CreateUserVars, UpdateUserVars, decoder)
 
 import Json.Decode exposing (Decoder, map4, field, string)
 
@@ -8,6 +8,14 @@ type alias User =
     , firstName : String
     , lastName : String
     , email : String
+    }
+
+
+type alias CreateUserVars =
+    { firstName : String
+    , lastName : String
+    , email : String
+    , password : String
     }
 
 

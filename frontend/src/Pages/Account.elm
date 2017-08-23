@@ -8,7 +8,7 @@ import Navigation
 import GraphQL.Client.Http exposing (Error)
 import Validate exposing (ifBlank, ifInvalidEmail)
 import RemoteData exposing (RemoteData(..))
-import Request.User exposing (UpdateResponse, sendUpdateUserMutationRequest)
+import Request.User exposing (UserResponse, sendUpdateUserMutationRequest)
 import Data.User exposing (UpdateUserVars)
 import Data.Session exposing (Session)
 import Data.Misc exposing (WebData)
@@ -177,7 +177,7 @@ update msg model =
 updateRequest : UpdateUserVars -> Session -> Cmd Msg
 updateRequest vars session =
     let
-        handleResponse : UpdateResponse -> Msg
+        handleResponse : UserResponse -> Msg
         handleResponse response =
             case response of
                 Ok session ->

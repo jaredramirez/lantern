@@ -1,4 +1,9 @@
-module Request.Session exposing (AuthenticateResponse, sendAuthenticateRequest)
+module Request.Session
+    exposing
+        ( AuthenticateResponse
+        , sendAuthenticateRequest
+        , sendCreateUserMutationRequest
+        )
 
 import Task exposing (Task)
 import GraphQL.Request.Builder exposing (..)
@@ -6,7 +11,8 @@ import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
 import GraphQL.Client.Http as GraphQLClient
 import Constants exposing (serverUrl)
-import Request.User exposing (userObject)
+import Request.User exposing (userObject, createUserArgObject)
+import Data.User exposing (CreateUserVars)
 import Data.Session exposing (Session, AuthenticateVars)
 
 
@@ -34,12 +40,32 @@ sessionObject =
         |> with (field "user" [] userObject)
 
 
-
--- authenticate a user
-
-
 type alias AuthenticateResponse =
     Result GraphQLClient.Error Session
+
+
+
+-- create a user
+
+
+createUserMutation : Document Mutation Session CreateUserVars
+createUserMutation =
+    mutationDocument <|
+        extract (field "createUser" [ createUserArgObject ] sessionObject)
+
+
+createUserMutationRequest : CreateUserVars -> Request Mutation Session
+createUserMutationRequest vars =
+    createUserMutation |> request vars
+
+
+sendCreateUserMutationRequest : CreateUserVars -> Task GraphQLClient.Error Session
+sendCreateUserMutationRequest vars =
+    GraphQLClient.sendMutation serverUrl (createUserMutationRequest vars)
+
+
+
+-- authenticate a user
 
 
 authenticateMutation : Document Mutation Session AuthenticateVars

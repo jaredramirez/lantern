@@ -28,7 +28,7 @@ type Page
     | Post PostPage.Model
     | Account AccountPage.Model
     | Login LoginPage.Model
-    | SignUp
+    | SignUp SignUpPage.Model
 
 
 type alias Model =
@@ -106,8 +106,11 @@ view model =
                         |> Html.map LoginMsg
                     )
 
-            SignUp ->
-                viewHeader SignUpPage.view
+            SignUp subModel ->
+                viewHeader
+                    (SignUpPage.view subModel
+                        |> Html.map SignUpMsg
+                    )
 
             _ ->
                 viewMinimalHeader NotFoundPage.view
@@ -159,7 +162,7 @@ routeChange maybeRoute model =
                 transition Login (LoginPage.init model.afterLoginRoute)
 
             Just Route.SignUp ->
-                ( { model | page = SignUp }, Cmd.none )
+                transition SignUp SignUpPage.init
 
             _ ->
                 ( { model | page = NotFound }
@@ -175,6 +178,7 @@ type Msg
     | NewPostMsg NewPostPage.Msg
     | LoginMsg LoginPage.Msg
     | AccountMsg AccountPage.Msg
+    | SignUpMsg SignUpPage.Msg
     | SetSession (Maybe Session)
     | NavigateToLogin
     | Logout
@@ -235,6 +239,23 @@ update msg model =
                     AccountPage.update subMsg subModel
             in
                 ( { model | page = Account newSubModel }, Cmd.map AccountMsg cmd )
+
+        ( SignUpMsg subMsg, SignUp subModel ) ->
+            let
+                ( ( newSubModel, cmd ), externalMsg ) =
+                    SignUpPage.update subMsg subModel
+            in
+                case externalMsg of
+                    SignUpPage.NoOp ->
+                        ( { model | page = SignUp newSubModel }, Cmd.map SignUpMsg cmd )
+
+                    SignUpPage.SetSession session ->
+                        ( { model
+                            | page = SignUp newSubModel
+                            , session = Just session
+                          }
+                        , Cmd.map SignUpMsg cmd
+                        )
 
         ( SetSession maybeSession, _ ) ->
             ( { model | session = maybeSession }, Cmd.none )

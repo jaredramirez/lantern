@@ -1,8 +1,4 @@
-const {
-  GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLString,
-} = require('graphql');
+const {GraphQLObjectType, GraphQLNonNull, GraphQLString} = require('graphql');
 const {
   PostType,
   PostCreateInputType,
@@ -34,7 +30,7 @@ const mutation = new GraphQLObjectType({
       args: {
         post: {
           type: PostCreateInputType,
-          description: 'Values to create post, does not include \'id\' field',
+          description: "Values to create post, does not include 'id' field",
         },
       },
       resolve: createPostResolver,
@@ -83,8 +79,8 @@ const mutation = new GraphQLObjectType({
       description: 'Create user and return new user with auth token.',
       args: {
         user: {
-          type: UserInputType,
-          description: 'Values to create user, does not include \'id\' field',
+          type: UserUpdateInputType,
+          description: "Values to create user, does not include 'id' field",
         },
       },
       resolve: createUserResolver,
@@ -99,7 +95,7 @@ const mutation = new GraphQLObjectType({
         },
         user: {
           type: UserUpdateInputType,
-          description: 'Values to update user, does not include \'id\' field',
+          description: "Values to update user, does not include 'id' field",
         },
       },
       resolve: updateUserResolver,
@@ -111,12 +107,11 @@ const mutation = new GraphQLObjectType({
         id: {
           type: new GraphQLNonNull(GraphQLString),
           description: 'id of the user to delete.',
-        }
+        },
       },
       resolve: deleteUserResolver,
     },
   },
 });
-
 
 module.exports = mutation;

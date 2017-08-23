@@ -1,12 +1,18 @@
-module Request.User exposing (userObject, UpdateResponse, sendUpdateUserMutationRequest)
+module Request.User
+    exposing
+        ( userObject
+        , createUserArgObject
+        , UserResponse
+        , sendUpdateUserMutationRequest
+        )
 
 import Task exposing (Task)
 import GraphQL.Request.Builder exposing (..)
 import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
 import GraphQL.Client.Http as GraphQLClient
-import Constants exposing (serverRequestOptions)
-import Data.User exposing (User, UpdateUserVars)
+import Constants exposing (serverUrl, serverRequestOptions)
+import Data.User exposing (User, CreateUserVars, UpdateUserVars)
 import Data.Session exposing (Session)
 
 
@@ -19,8 +25,8 @@ userObject =
         |> with (field "email" [] string)
 
 
-userArgObject : ( String, Arg.Value UpdateUserVars )
-userArgObject =
+createUserArgObject : ( String, Arg.Value CreateUserVars )
+createUserArgObject =
     let
         firstName =
             Var.required "firstName" .firstName Var.string
@@ -44,7 +50,36 @@ userArgObject =
         )
 
 
-type alias UpdateResponse =
+updateUserArgObject : ( String, Arg.Value UpdateUserVars )
+updateUserArgObject =
+    let
+        firstName =
+            Var.required "firstName" .firstName Var.string
+
+        lastName =
+            Var.required "lastName" .lastName Var.string
+
+        email =
+            Var.required "email" .email Var.string
+
+        password =
+            Var.required "password" .password Var.string
+    in
+        ( "user"
+        , Arg.object
+            [ ( "firstName", Arg.variable firstName )
+            , ( "lastName", Arg.variable lastName )
+            , ( "email", Arg.variable email )
+            , ( "password", Arg.variable password )
+            ]
+        )
+
+
+
+-- UPDATE
+
+
+type alias UserResponse =
     Result GraphQLClient.Error User
 
 
@@ -55,7 +90,7 @@ updateUserMutation =
             Var.required "id" .id Var.string
     in
         mutationDocument <|
-            extract (field "updateUser" [ ( "id", Arg.variable id ), userArgObject ] userObject)
+            extract (field "updateUser" [ ( "id", Arg.variable id ), updateUserArgObject ] userObject)
 
 
 updateUserMutationRequest : UpdateUserVars -> Request Mutation User

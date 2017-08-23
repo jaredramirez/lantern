@@ -3,6 +3,7 @@ module Pages.Login exposing (Model, init, view, Msg, ExternalMsg(..), update)
 import Task exposing (Task)
 import Html exposing (Html, div, span, text)
 import Html.Attributes
+import Html.Events exposing (onClick)
 import Css
 import Navigation
 import GraphQL.Client.Http exposing (Error)
@@ -58,7 +59,7 @@ view ( { email, password, showPassword, loginRequest }, afterLoginRoute ) =
                     [ viewButton "SUBMIT" (BeginLoginIfValid afterLoginRoute)
                     , span [] [ text "Failed to login." ]
                     ]
-        , span [ style stylesheet.signUp ] [ text "Or Sign Up" ]
+        , span [ style stylesheet.signUp, onClick NaviateToSignUp ] [ text "Or Sign Up" ]
         ]
 
 
@@ -74,6 +75,7 @@ type Msg
     | BeginLoginIfValid Route
     | LoginSuccess Session Route
     | LoginError Error
+    | NaviateToSignUp
 
 
 update : Msg -> Model -> ( ( Model, Cmd Msg ), ExternalMsg )
@@ -143,6 +145,9 @@ update msg model =
 
             LoginError error ->
                 ( ( { model | loginRequest = Failure error }, Cmd.none ), NoOp )
+
+            NaviateToSignUp ->
+                ( ( model, newUrl Route.SignUp ), NoOp )
 
 
 loginRequest : String -> String -> Route -> Cmd Msg
