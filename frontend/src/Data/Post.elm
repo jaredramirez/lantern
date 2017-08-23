@@ -1,4 +1,4 @@
-module Data.Post exposing (Post, Posts, idParser, Id(Id), idToString)
+module Data.Post exposing (Post, NewPostVars, Posts, idParser, Id(Id), idToString)
 
 import UrlParser exposing (Parser, custom)
 import Data.User exposing (User)
@@ -10,6 +10,12 @@ type alias Post =
     , body : String
     , stars : List String
     , author : User
+    }
+
+
+type alias NewPostVars =
+    { title : String
+    , body : String
     }
 
 

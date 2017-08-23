@@ -1,13 +1,38 @@
-module Request.Post exposing (sendPostsRequest, PostsResponse, sendPostRequest, PostResponse)
+module Request.Post
+    exposing
+        ( sendPostsRequest
+        , PostsResponse
+        , sendPostRequest
+        , PostResponse
+        , sendPostMutationRequest
+        )
 
 import Task exposing (Task)
 import GraphQL.Request.Builder exposing (..)
 import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
 import GraphQL.Client.Http as GraphQLClient
-import Constants exposing (serverUrl)
+import Constants exposing (serverUrl, serverRequestOptions)
 import Request.User exposing (userObject)
-import Data.Post exposing (Post, Posts, Id, idToString)
+import Data.Session exposing (Session)
+import Data.Post exposing (Post, NewPostVars, Posts, Id, idToString)
+
+
+newPostArgObject : ( String, Arg.Value NewPostVars )
+newPostArgObject =
+    let
+        title =
+            Var.required "title" .title Var.string
+
+        body =
+            Var.required "body" .body Var.string
+    in
+        ( "post"
+        , Arg.object
+            [ ( "title", Arg.variable title )
+            , ( "body", Arg.variable body )
+            ]
+        )
 
 
 postObject : ValueSpec NonNull ObjectType Post vars
@@ -20,12 +45,12 @@ postObject =
         |> with (field "author" [] userObject)
 
 
-
--- Fetch list of posts
-
-
 type alias PostsResponse =
     Result GraphQLClient.Error Posts
+
+
+
+-- Fetch list of posts
 
 
 postsQuery : Document Query Posts vars
@@ -44,12 +69,12 @@ sendPostsRequest =
     GraphQLClient.sendQuery serverUrl postsRequest
 
 
-
--- Fetch indiviaul post
-
-
 type alias PostResponse =
     Result GraphQLClient.Error Post
+
+
+
+-- Get post
 
 
 postQuery : Document Query Post { postId : String }
@@ -70,3 +95,25 @@ postRequest postId =
 sendPostRequest : Id -> Task GraphQLClient.Error Post
 sendPostRequest id =
     GraphQLClient.sendQuery serverUrl (postRequest id)
+
+
+
+-- Create new post
+
+
+postMutation : Document Mutation Post NewPostVars
+postMutation =
+    mutationDocument
+        (extract (field "createPost" [ newPostArgObject ] postObject))
+
+
+postMutationRequest : NewPostVars -> Request Mutation Post
+postMutationRequest newPostVars =
+    postMutation |> request newPostVars
+
+
+sendPostMutationRequest : NewPostVars -> Session -> Task GraphQLClient.Error Post
+sendPostMutationRequest newPostVars { token } =
+    GraphQLClient.customSendMutation
+        (serverRequestOptions "POST" token)
+        (postMutationRequest newPostVars)

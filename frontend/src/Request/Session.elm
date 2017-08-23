@@ -10,15 +10,8 @@ import Request.User exposing (userObject)
 import Data.Session exposing (Session, AuthenticateVars)
 
 
-sessionObject : ValueSpec NonNull ObjectType Session var
-sessionObject =
-    object Session
-        |> with (field "token" [] string)
-        |> with (field "user" [] userObject)
-
-
-loginObject : ( String, Arg.Value AuthenticateVars )
-loginObject =
+loginArgObject : ( String, Arg.Value AuthenticateVars )
+loginArgObject =
     let
         email =
             Var.required "email" .email Var.string
@@ -34,6 +27,13 @@ loginObject =
         )
 
 
+sessionObject : ValueSpec NonNull ObjectType Session var
+sessionObject =
+    object Session
+        |> with (field "token" [] string)
+        |> with (field "user" [] userObject)
+
+
 
 -- authenticate a user
 
@@ -45,7 +45,7 @@ type alias AuthenticateResponse =
 authenticateMutation : Document Mutation Session AuthenticateVars
 authenticateMutation =
     mutationDocument <|
-        extract (field "authenticate" [ loginObject ] sessionObject)
+        extract (field "authenticate" [ loginArgObject ] sessionObject)
 
 
 authenticateRequest : AuthenticateVars -> Request Mutation Session

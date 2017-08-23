@@ -84,7 +84,7 @@ view model =
 
             NewPost subModel ->
                 viewAuthenticated
-                    (NewPostPage.view subModel
+                    (NewPostPage.view subModel model.session
                         |> Html.map NewPostMsg
                     )
 

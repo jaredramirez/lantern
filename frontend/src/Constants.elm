@@ -1,9 +1,22 @@
-module Constants exposing (serverUrl, fontLight, fontBold, colors)
+module Constants exposing (serverUrl, serverRequestOptions, fontLight, fontBold, colors)
+
+import Http exposing (header)
+import GraphQL.Client.Http exposing (RequestOptions)
 
 
 serverUrl : String
 serverUrl =
     "http://localhost:3000/graphql"
+
+
+serverRequestOptions : String -> String -> RequestOptions
+serverRequestOptions method token =
+    { method = method
+    , headers = [ header "Authorization" ("Bearer " ++ token) ]
+    , url = serverUrl
+    , timeout = Nothing
+    , withCredentials = False
+    }
 
 
 fontLight : String
